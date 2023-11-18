@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Drafthorse_rh8": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Rhino 8\\System\\Rhino.exe",
+      "commandLineArgs": ""
+    }
+  }
+}
