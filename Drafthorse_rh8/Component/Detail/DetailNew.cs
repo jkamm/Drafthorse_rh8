@@ -1,4 +1,4 @@
-﻿using DraftHorse.Helper;
+﻿using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Rhino;
 using Rhino.Commands;
@@ -7,14 +7,15 @@ using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static DraftHorse.Helper.Layout;
+using static Drafthorse.Helper.Layout;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Rhinoceros.Display;
+using Grasshopper.Rhinoceros.Display.Params;
+using Grasshopper.Kernel.Types;
 
-
-namespace DraftHorse.Component.Detail
+namespace Drafthorse.Component.Detail
 {
-    public class DetailNew : Drafthorse.Component.Base.DH_ButtonComponent
+    public class DetailNew : Base.DH_ButtonComponent
     {
         //Goal: Change from instantiator to separate Detail settings so that a detail can either be modified or baked
 
@@ -24,7 +25,7 @@ namespace DraftHorse.Component.Detail
         public DetailNew()
           : base("New Detail", "NewDetail",
               "Add a new detail to an existing layout",
-              "DraftHorse", "Detail")
+              "Drafthorse", "Detail")
         {
             ButtonName = "Create";
         }
@@ -38,10 +39,10 @@ namespace DraftHorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            var bToggle = new DraftHorse.Params.Param_BooleanToggle();
+            var bToggle = new Params.Param_BooleanToggle();
             Params.Input[pManager.AddParameter(bToggle, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
-
-            pManager.AddIntegerParameter("Index", "Li[]", "Layout index for new detail\nAdd ValueList to get list of layouts", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_ModelPageViewport(), "Layout Page", "P", "Layout Page to add detail", GH_ParamAccess.item);
+            //pManager.AddIntegerParameter("Index", "Li[]", "Layout index for new detail\nAdd ValueList to get list of layouts", GH_ParamAccess.item);
             pManager.AddRectangleParameter("Bounds", "B", "Detail Boundary Rectangle on Layout Page", GH_ParamAccess.item);
             //var displayParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelDisplayMode();
             //pManager.AddParameter(displayParam, "Display", "D", "Model Display Mode", GH_ParamAccess.item);
@@ -50,7 +51,7 @@ namespace DraftHorse.Component.Detail
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item, 1);
             pManager.AddIntegerParameter("Projection", "P[]", "View Projection \nAttach Value List for list of projections", GH_ParamAccess.item, 0);
 
-            var viewParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelView();
+            var viewParam = new Param_ModelView();
             viewParam.Hidden = true;
             pManager.AddParameter(viewParam, "View", "V", "Model View", GH_ParamAccess.item);
 
@@ -81,17 +82,22 @@ namespace DraftHorse.Component.Detail
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Result", "R", "Success or Failure for each detail", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Index", "Li", "Index of Layout detail was created on", GH_ParamAccess.item);
-            var guidParam = new Param_Guid();
-            pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
-            pManager.AddTextParameter("Display", "D", "Display Mode", GH_ParamAccess.item);
+            //pManager.AddIntegerParameter("Index", "Li", "Index of Layout detail was created on", GH_ParamAccess.item);
+            //pManager.AddParameter(new Param_ModelPageViewport(), "Layout Page", "P", "Detail's Layout Page", GH_ParamAccess.item);
+            //var guidParam = new Param_Guid();
+            //pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Detail", "D", "Referenced Detail Object", GH_ParamAccess.item);
+            //pManager.AddTextParameter("Display", "D", "Display Mode", GH_ParamAccess.item);
+            
+            pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D", "Model Display Mode", GH_ParamAccess.item);
+
             pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item);
             pManager.AddTextParameter("Projection", "P", "ViewPort Viewname", GH_ParamAccess.item);
 
-            var viewParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelView();
+            var viewParam = new Param_ModelView();
             viewParam.Hidden = true;
-            pManager.AddParameter(viewParam, "View", "V", "Model View", GH_ParamAccess.item);
+            pManager.AddParameter(viewParam, "View", "V", "Detail View", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -109,10 +115,14 @@ namespace DraftHorse.Component.Detail
             bool run = false;
             DA.GetData("Run", ref run);
 
-            int index = new int();
-            DA.GetData("Index", ref index);
 
-            RhinoPageView pageView = GetPage(index);
+            ModelPageViewport page = new ModelPageViewport();
+            DA.GetData("Layout Page", ref page);
+
+            //int index = new int();
+            //DA.GetData("Index", ref index);
+
+            RhinoPageView pageView = GetPage((int)page.PageNumber);
 
             Rectangle3d dBounds = new Rectangle3d();
             DA.GetData("Bounds", ref dBounds);
@@ -211,18 +221,20 @@ namespace DraftHorse.Component.Detail
                     doc.Views.Redraw();
                     if (detail != null)
                     {
-                        result = Layout.ReviseDetail(detail, targetBBox, scale, projection, displayMode, view.ToViewportInfo());
+                        result = ReviseDetail(detail, targetBBox, scale, projection, displayMode, view.ToViewportInfo());
                     }
 
                     ModelView newView= new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport));
+                    ModelDisplayMode newDisplayMode = new ModelDisplayMode(displayMode);
+                    GH_DetailView newDetail = new GH_DetailView(detail.Id);
 
                     DA.SetData("Result", result);
-                    DA.SetData("Index", pageView.PageNumber);
-                    DA.SetData("GUID", detail.Id);
+                    //DA.SetData("Page", pageView.PageNumber);
+                    DA.SetData("Detail", newDetail);
                     DA.SetData("Target", detail.Viewport.CameraTarget);
                     DA.SetData("Scale", detail.DetailGeometry.PageToModelRatio);
                     DA.SetData("Projection", detail.Viewport.Name);
-                    DA.SetData("Display", detail.Viewport.DisplayMode.EnglishName);
+                    DA.SetData("Display", newDisplayMode);
                     DA.SetData("View", newView);
                 }
 
@@ -362,7 +374,7 @@ namespace DraftHorse.Component.Detail
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("9d650600-81a3-11ee-8815-c54601ffc14f"); }
+            get { return new Guid("75f7fa62-8641-11ee-b9d1-0242ac120002"); }
         }
     }
 }

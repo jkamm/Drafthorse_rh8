@@ -2,7 +2,7 @@
 using System;
 
 
-namespace DraftHorse.Params
+namespace Drafthorse.Params
 {
     class Param_BooleanToggle : Grasshopper.Kernel.Parameters.Param_Boolean
     {

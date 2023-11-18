@@ -2,7 +2,7 @@
 using System;
 
 
-namespace DraftHorse.Params
+namespace Drafthorse.Params
 {
     class Param_BooleanButton : Grasshopper.Kernel.Parameters.Param_Boolean
     {

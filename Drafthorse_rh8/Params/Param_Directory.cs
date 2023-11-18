@@ -1,4 +1,4 @@
-﻿namespace DraftHorse.Params
+﻿namespace Drafthorse.Params
 {
     class Param_Directory : Grasshopper.Kernel.Parameters.Param_FilePath
     {

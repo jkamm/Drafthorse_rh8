@@ -5,10 +5,10 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
-using static DraftHorse.Helper.View;
+using static Drafthorse.Helper.View;
 
 
-namespace DraftHorse.Helper
+namespace Drafthorse.Helper
 {
     public static class Layout
     {

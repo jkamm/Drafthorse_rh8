@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace DraftHorse.Helper
+namespace Drafthorse.Helper
 {
     /// <summary>
     /// ValList class contains code to copy and paste into a component to implement ValList code.
@@ -102,6 +102,7 @@ namespace DraftHorse.Helper
 
         // - Constructor with a list that needs to be updated
         // - Constructor with a fixed list of keys, values.
+        /*
         public NewValList(int input, string name, GH_Component owner)
         {
             keys = new List<string>();
@@ -127,6 +128,7 @@ namespace DraftHorse.Helper
             SetKeys(keys);
             SetVals(keys);
         }
+         */
 
 
         /*in-Component Code for adding Value Lists using Helper_ValList methods

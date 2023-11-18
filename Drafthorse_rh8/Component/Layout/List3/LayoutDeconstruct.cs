@@ -5,10 +5,11 @@ using Rhino;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Grasshopper.Rhinoceros.Display;
 
-namespace Drafthorse.Component.Layout
+namespace Drafthorse.Component.Layout.List3
 {
-    public class DH_Component : GH_Component
+    public class LayoutDeconstruct : GH_Component
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -17,20 +18,21 @@ namespace Drafthorse.Component.Layout
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public DH_Component()
-          : base("Deconstruct Layout", "Dec Layout",
-            "Deconstruct a Layout",
-            "Drafthorse", "Layout-Edit")
+        public LayoutDeconstruct()
+          : base("Deconstruct Layout Page", "Dec Layout",
+            "Deconstruct a Layout Page to get Contents and Attributes",
+            "Drafthorse", "Layout")
         {
         }
+        int in_page;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddParameter(new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport(), "Layout", "L", "Input Layout", GH_ParamAccess.item);
-
+            var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
+            in_page = pManager.AddParameter(pageParam, "Layout", "P", "Input Layout Page", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -38,12 +40,16 @@ namespace Drafthorse.Component.Layout
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Page Number", "#", "Number in the Layout table", GH_ParamAccess.item);
+            pManager.AddIntegerParameter("Page Number", "#", "Order of Page in Rhino", GH_ParamAccess.item);
             pManager.AddTextParameter("Page Name", "N", "Page name", GH_ParamAccess.item);
-            pManager.AddParameter(new Grasshopper.Rhinoceros.Display.Params.Param_ModelView(), "View", "V", "LayoutView", GH_ParamAccess.item);
+            //pManager.AddParameter(new Grasshopper.Rhinoceros.Display.Params.Param_ModelView(), "View", "V", " Detail View", GH_ParamAccess.item);
+            
             pManager.AddGenericParameter("Details", "D", "Details that appear on the page", GH_ParamAccess.list);
             pManager.AddNumberParameter("Width", "W", "Width of the Layout Page", GH_ParamAccess.item);
             pManager.AddNumberParameter("Height", "H", "Height of the Layout Page", GH_ParamAccess.item);
+            pManager.AddTextParameter("Units", "U", "Paperspace Units", GH_ParamAccess.item);
+            /*
+             */
 
         }
 
@@ -53,8 +59,8 @@ namespace Drafthorse.Component.Layout
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Grasshopper.Rhinoceros.Display.ModelPageViewport page = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
-            DA.GetData("Layout", ref page);
+            ModelPageViewport page = new ModelPageViewport();
+            DA.GetData(in_page, ref page);
 
             if (page != null)
             {
@@ -68,7 +74,7 @@ namespace Drafthorse.Component.Layout
 
                 string pageName = page.Name;
                 int? pageNumber = page.PageNumber;
-                Grasshopper.Rhinoceros.Display.ModelView view = page.View;
+                ModelView view = page.View;
                 var path = page.Path;
 
                 Grasshopper.Rhinoceros.ModelUserText userText = new Grasshopper.Rhinoceros.ModelUserText();
@@ -81,13 +87,15 @@ namespace Drafthorse.Component.Layout
                     keys.AddRange(userText.Keys);
                     vals.AddRange(userText.Values);
                 }
-
                 DA.SetData("Page Name", pageName);
                 DA.SetData("Page Number", pageNumber);
-                DA.SetData("View", view);
+                //DA.SetData("View", view);
                 DA.SetDataList("Details", gH_Details);
                 DA.SetData("Width", pageWidth);
                 DA.SetData("Height", pageHeight);
+                DA.SetData("Units", RhinoDoc.ActiveDoc.PageUnitSystem);
+
+                
 
             }
         }
@@ -98,7 +106,7 @@ namespace Drafthorse.Component.Layout
         /// You can add image files to your project resources and access them like this:
         /// return Resources.IconForThisComponent;
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => null;
+        protected override System.Drawing.Bitmap Icon => Drafthorse_rh8.Properties.Resources.Dec_Layout;
 
         /// <summary>
         /// Each component must have a unique Guid to identify it. 

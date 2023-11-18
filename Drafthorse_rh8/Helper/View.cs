@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Rhino.Geometry;
 using Rhino.UI.Controls;
 
-namespace DraftHorse.Helper
+namespace Drafthorse.Helper
 {
     internal class View
     {

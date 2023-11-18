@@ -9,6 +9,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <PackageProjectUrl>https://github.com/jkamm/Drafthorse_rh8</PackageProjectUrl>
     <PackageIcon>DrafthorseLogo64x64.png</PackageIcon>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0|AnyCPU'">
@@ -53,8 +54,12 @@
     </None>
   </ItemGroup>
   
+  <ItemGroup>
+    <Folder Include="Component\Layout\List1\" />
+  </ItemGroup>
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;%25APPDATA%25\Grasshopper\Libraries\DraftHorse_rh8.gha&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;C:\Users\%25USERNAME%25\Documents\Github\DraftHorse_rh8\DraftHorse_rh8\DraftHorse_rh8.gha&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;%25APPDATA%25\Grasshopper\Libraries\Drafthorse_rh8.gha&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;C:\Users\%25USERNAME%25\Documents\Github\Drafthorse_rh8\Drafthorse_rh8\Drafthorse_rh8.gha&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
   </Target>
 
 </Project>
