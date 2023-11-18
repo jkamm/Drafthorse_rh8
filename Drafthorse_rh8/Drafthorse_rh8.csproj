@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net48</TargetFrameworks>
+    <TargetFrameworks>net7.0-windows;net48-windows</TargetFrameworks>
     <Version>1.0.0</Version>
     <Title>Drafthorse_rh8</Title>
     <Description>Plugin for Grasshopper to make and manage Layouts in Rhinoceros 3d</Description>
@@ -54,7 +54,7 @@
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;%25APPDATA%25\Grasshopper\Libraries\DraftHorse.gha&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;C:\Users\%25USERNAME%25\Documents\Github\DraftHorse_rh8\DraftHorse_rh8\DraftHorse.gha&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;%25APPDATA%25\Grasshopper\Libraries\DraftHorse_rh8.gha&quot;&#xD;&#xA;Copy &quot;$(TargetPath)&quot; &quot;C:\Users\%25USERNAME%25\Documents\Github\DraftHorse_rh8\DraftHorse_rh8\DraftHorse_rh8.gha&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
   </Target>
 
 </Project>
