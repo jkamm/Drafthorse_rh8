@@ -5,7 +5,7 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using static DraftHorse.Helper.View;
 
 
 namespace DraftHorse.Helper
