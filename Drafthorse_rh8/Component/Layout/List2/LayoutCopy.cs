@@ -2,9 +2,9 @@
 using Grasshopper.Kernel;
 using static Drafthorse.Helper.Layout;
 
-namespace Drafthorse_rh8.Component.Layout.List2
+namespace Drafthorse.Component.Layout.List2
 {
-    public class LayoutCopy : Drafthorse.Component.Base.DH_ButtonComponent
+    public class LayoutCopy :Base.DH_ButtonComponent
     {
         /// <summary>
         /// Initializes a new instance of the Copy class.
@@ -16,7 +16,7 @@ namespace Drafthorse_rh8.Component.Layout.List2
         {
             ButtonName = "Copy";
         }
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -95,7 +95,7 @@ namespace Drafthorse_rh8.Component.Layout.List2
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.CopyLayout;
+        protected override System.Drawing.Bitmap Icon => Drafthorse_rh8.Properties.Resources.CopyLayout;
 
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.

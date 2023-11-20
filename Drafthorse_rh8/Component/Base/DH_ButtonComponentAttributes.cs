@@ -18,7 +18,7 @@ namespace Drafthorse.Component.Base
 
         //GH_Component thisowner = null;
 
-        public DH_ButtonComponentAttributes(DH_ButtonComponent owner) : base(owner)
+        public DH_ButtonComponentAttributes(Drafthorse.Component.Base.DH_ButtonComponent owner) : base(owner)
         {
             //thisowner = owner;
             mouseOver = false;

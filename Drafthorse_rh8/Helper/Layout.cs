@@ -12,6 +12,52 @@ namespace Drafthorse.Helper
 {
     public static class Layout
     {
+        /// <summary>
+        /// Alternative AddLayout with additional options
+        /// </summary>
+        public static Rhino.Commands.Result AddLayout(string name, string detTitle, double width, double height, Rectangle3d detailRec, double scale, out RhinoPageView layout)
+        {
+            RhinoDoc doc = RhinoDoc.ActiveDoc;
+            ViewportInfo vpInfo = ParallelViewFromRec(detailRec);
+
+            var page_views = doc.Views.GetPageViews();
+            //int page_number = (page_views == null) ? 1 : page_views.Length + 1;
+
+            var pageview = doc.Views.AddPageView(name, width, height);
+
+            if (pageview != null)
+            {
+                Point2d top_left = new Point2d(0, height);
+                Point2d bottom_right = new Point2d(width, 0);
+                var detail = pageview.AddDetailView(DefinedViewportProjection.Top.ToString(), top_left, bottom_right, DefinedViewportProjection.Top);
+                if (detail != null)
+                {
+
+                    pageview.SetActiveDetail(detail.Id);
+                    //detail.Viewport.SetCameraTarget(detailRec.Center, true);
+                    //ViewportInfoToRhinoViewport(vpInfo, detail.Viewport);
+                    detail.Viewport.SetViewProjection(vpInfo, true);
+                    // CommitViewPortChanges modifies the Viewport only
+                    detail.CommitViewportChanges();
+
+                    pageview.SetActiveDetail(detail.Id);
+                    detail.Name = detTitle;
+                    detail.DetailGeometry.IsProjectionLocked = false;
+                    detail.DetailGeometry.SetScale(1, doc.ModelUnitSystem, scale, doc.PageUnitSystem);
+                    // Commit changes tells the document to replace the document's detail object
+                    // with the modified one that we just adjusted
+                    detail.CommitChanges();
+
+                }
+                pageview.SetPageAsActive();
+                doc.Views.ActiveView = pageview;
+                doc.Views.Redraw();
+                layout = pageview;
+                return Rhino.Commands.Result.Success;
+            }
+            layout = null;
+            return Rhino.Commands.Result.Failure;
+        }
         public static RhinoPageView DupLayout(string name)
         {
             var page_views = RhinoDoc.ActiveDoc.Views.GetPageViews();

@@ -26,6 +26,8 @@ namespace Drafthorse.Component.Layout.List3
         }
         int in_page;
 
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -62,10 +64,10 @@ namespace Drafthorse.Component.Layout.List3
             ModelPageViewport page = new ModelPageViewport();
             DA.GetData(in_page, ref page);
 
-            if (page != null)
-            {
-                RhinoPageView rhinoPage = Array.Find(RhinoDoc.ActiveDoc.Views.GetPageViews(),
-                    (x) => x.MainViewport.Id.Equals(page.Id));
+            RhinoPageView rhinoPage = Helper.Layout.GetPage((int)page.PageNumber);
+
+            if (rhinoPage != null)
+            {;
 
                 List<GH_DetailView> gH_Details = rhinoPage.GetDetailViews().Select(v => new GH_DetailView(v.Id)).ToList();
 

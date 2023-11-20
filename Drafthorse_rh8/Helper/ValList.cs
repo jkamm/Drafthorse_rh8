@@ -131,7 +131,7 @@ namespace Drafthorse.Helper
          */
 
 
-        /*in-Component Code for adding Value Lists using Helper_ValList methods
+        /*in-Drafthorse Code for adding Value Lists using Helper_ValList methods
 
         #region Add Value Lists
         //Add menu item for adding/updating Lists
@@ -287,7 +287,7 @@ namespace Drafthorse.Helper
                 (owner.Params.Input[inputNum].Sources[0] as Grasshopper.Kernel.Special.GH_ValueList).ListItems.Add(new Grasshopper.Kernel.Special.GH_ValueListItem(keys[i], i.ToString()));
             }
 
-            //Reset Component Preview
+            //Reset Drafthorse Preview
             (owner.Params.Input[inputNum].Sources[0] as Grasshopper.Kernel.Special.GH_ValueList).ExpireSolution(true);
         }
 
@@ -312,7 +312,7 @@ namespace Drafthorse.Helper
                     (owner.Params.Input[inputNum].Sources[0] as Grasshopper.Kernel.Special.GH_ValueList).ListItems.Add(new Grasshopper.Kernel.Special.GH_ValueListItem(keys[i], "\"" + values[i] + "\""));
                 }
 
-            //Reset Component Preview
+            //Reset Drafthorse Preview
             (owner.Params.Input[inputNum].Sources[0] as Grasshopper.Kernel.Special.GH_ValueList).ExpireSolution(true);
             }
             catch (Exception)
