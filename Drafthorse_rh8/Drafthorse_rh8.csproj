@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFrameworks>net7.0-windows;net48-windows</TargetFrameworks>
-    <Version>1.0.0</Version>
+    <Version>0.1.0-beta</Version>
     <Title>Drafthorse_rh8</Title>
     <Description>Plugin for Grasshopper to make and manage Layouts in Rhinoceros 3d</Description>
     <TargetExt>.gha</TargetExt>
@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/jkamm/Drafthorse_rh8</PackageProjectUrl>
     <PackageIcon>DrafthorseLogo64x64.png</PackageIcon>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0|AnyCPU'">
@@ -30,6 +31,7 @@
   
   <ItemGroup>
     <PackageReference Include="Grasshopper" Version="8.0.23304.9001" IncludeAssets="compile;build" />
+    <PackageReference Include="RhinoCommon" Version="8.0.23304.9001" />
   </ItemGroup>
   
   <ItemGroup>

@@ -119,7 +119,7 @@ namespace Drafthorse.Component.Detail
             Rhino.DocObjects.DetailViewObject detail = Rhino.RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
             if (detail == null)
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Detail is not valid");
+                //AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Detail is not valid");
                 return;
             }
 

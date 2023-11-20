@@ -67,12 +67,16 @@ namespace Drafthorse.Component.Layout.List3
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             int index = new int();
-            if (!DA.GetData("Index", ref index)) return;
+            DA.GetData("Index", ref index);
 
             var page = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
             DA.GetData(in_page, ref page);
 
-            if (page.PageNumber == null) return;
+            if (page.PageNumber == null)
+            {
+                Rhino.RhinoApp.CommandLineOut.WriteLine("Page was null"); //feedback for debugging
+                return;
+            }
 
             Rhino.Display.RhinoPageView target = GetPage((int)page.PageNumber);
 

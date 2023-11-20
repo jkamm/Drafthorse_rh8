@@ -115,19 +115,19 @@ namespace Drafthorse.Component.Layout.List3
                     : DialogResult.Yes;
                 if (result2 == DialogResult.Yes)
                 {
-                    /*
                     for (int j = 0; j < indexSet.Count; j++)
                     {
                         Rhino.Display.RhinoPageView pageView = Helper.Layout.GetPage(uniqIndexList[j]);
                         pageView.Close();
                     }
-                    */
+                    /*
 
                     foreach (Grasshopper.Rhinoceros.Display.ModelPageViewport page in pageList) 
                     {
                         Rhino.Display.RhinoPageView pageView = Helper.Layout.GetPage((int)page.PageNumber);
                         if (pageView != null) pageView.Close();
                     }
+                    */
                    
 
                     Done = true;

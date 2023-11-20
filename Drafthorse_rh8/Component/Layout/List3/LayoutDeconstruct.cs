@@ -64,6 +64,7 @@ namespace Drafthorse.Component.Layout.List3
             ModelPageViewport page = new ModelPageViewport();
             DA.GetData(in_page, ref page);
 
+            if (page.PageNumber == null) return;
             RhinoPageView rhinoPage = Helper.Layout.GetPage((int)page.PageNumber);
 
             if (rhinoPage != null)

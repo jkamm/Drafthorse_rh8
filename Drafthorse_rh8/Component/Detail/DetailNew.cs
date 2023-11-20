@@ -121,6 +121,7 @@ namespace Drafthorse.Component.Detail
 
             //int index = new int();
             //DA.GetData("Index", ref index);
+            if (page.PageNumber == null) return;
 
             RhinoPageView pageView = GetPage((int)page.PageNumber);
 
