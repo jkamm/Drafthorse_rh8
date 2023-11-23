@@ -63,7 +63,7 @@ namespace Drafthorse.Component.Base
             {
                 mouseDown = true;
                 Owner.RecordUndoEvent("Update Selection");
-                DH_UpdateButtonComponent dH_UpdateButtonComponent = Owner as DH_UpdateButtonComponent;
+                //DH_UpdateButtonComponent dH_UpdateButtonComponent = Owner as DH_UpdateButtonComponent;
                 Owner.ExpireSolution(recompute: true);
                 return GH_ObjectResponse.Capture;
             }

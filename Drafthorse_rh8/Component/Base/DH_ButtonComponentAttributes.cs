@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Drafthorse.Component.Base
-
 {
     public class DH_ButtonComponentAttributes : Grasshopper.Kernel.Attributes.GH_ComponentAttributes
     {
@@ -16,9 +15,13 @@ namespace Drafthorse.Component.Base
 
         public event EventHandler ButtonPressed;
 
+        private RectangleF buttonArea;
+
+        private RectangleF textArea;
+
         //GH_Component thisowner = null;
 
-        public DH_ButtonComponentAttributes(Drafthorse.Component.Base.DH_ButtonComponent owner) : base(owner)
+        public DH_ButtonComponentAttributes(DH_ButtonComponent owner) : base(owner)
         {
             //thisowner = owner;
             mouseOver = false;
@@ -27,10 +30,17 @@ namespace Drafthorse.Component.Base
             ButtonPressed += owner.OnButtonActivate;
         }
 
-        public GH_Capsule button = null;
+        //public GH_Capsule button = null;
 
         protected override void Layout()
         {
+            Bounds = RectangleF.Empty;
+            base.Layout();
+            buttonArea = new RectangleF(Bounds.Left, Bounds.Bottom, Bounds.Width, 22f);
+            textArea = buttonArea;
+            Bounds = RectangleF.Union(Bounds, buttonArea);
+            buttonArea.Inflate(-2, -2);
+            /*
             base.Layout();
 
             RectangleF rec0 = GH_Convert.ToRectangle(Bounds);
@@ -43,17 +53,18 @@ namespace Drafthorse.Component.Base
 
             Bounds = rec0;
             ButtonBounds = rec1;
+             */
         }
-        private RectangleF ButtonBounds { get; set; }
+        //private RectangleF ButtonBounds { get; set; }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
             base.Render(canvas, graphics, channel);
-
             if (channel == GH_CanvasChannel.Objects)
             {
                 GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(GH_Palette.Black, Selected, Owner.Locked, hidden: true);
-                GH_Capsule gH_Capsule = GH_Capsule.CreateTextCapsule(ButtonBounds, ButtonBounds, GH_Palette.Black, (base.Owner as DH_ButtonComponent).ButtonName, 2, 9);
+                GH_Capsule gH_Capsule = GH_Capsule.CreateTextCapsule(buttonArea, textArea, GH_Palette.Black, (Owner as DH_ButtonComponent).ButtonName, 2, 9);
+                //GH_Capsule gH_Capsule = GH_Capsule.CreateTextCapsule(buttonArea, textArea, GH_Palette.Black, "Update", 2, 9);
                 gH_Capsule.RenderEngine.RenderBackground(graphics, canvas.Viewport.Zoom, impliedStyle);
                 if (!mouseDown)
                 {
@@ -64,7 +75,6 @@ namespace Drafthorse.Component.Base
                 {
                     gH_Capsule.RenderEngine.RenderBackground_Alternative(graphics, Color.FromArgb(50, Color.Gray), drawAlphaGrid: false);
                 }
-
                 gH_Capsule.RenderEngine.RenderText(graphics, Color.White);
                 gH_Capsule.Dispose();
             }
@@ -77,7 +87,8 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseMove(sender, e);
             }
-            if (ButtonBounds.Contains(point))
+            //if (ButtonBounds.Contains(point))
+            if (buttonArea.Contains(point))
             {
                 if (!mouseOver)
                 {
@@ -100,7 +111,8 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseUp(sender, e);
             }
-            if (!ButtonBounds.Contains(e.CanvasLocation))
+            //if (!ButtonBounds.Contains(e.CanvasLocation))
+            if (!buttonArea.Contains(e.CanvasLocation))
             {
                 mouseDown = false;
                 return base.RespondToMouseUp(sender, e);
@@ -118,9 +130,10 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseDown(sender, e);
             }
-            if (!ButtonBounds.Contains(e.CanvasLocation))
-            {
-                return base.RespondToMouseDown(sender, e);
+            //if (!ButtonBounds.Contains(e.CanvasLocation))
+                if (!buttonArea.Contains(e.CanvasLocation))
+{
+                    return base.RespondToMouseDown(sender, e);
             }
             mouseDown = true;
             ((Control)(object)sender).Refresh();
