@@ -1,11 +1,8 @@
-﻿using Drafthorse.Helper;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using static Drafthorse.Helper.ValList;
+
 
 namespace Drafthorse.Component.Layout.List3
 {
@@ -178,8 +175,8 @@ namespace Drafthorse.Component.Layout.List3
         protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
         {
             base.AppendAdditionalComponentMenuItems(menu);
-            Menu_AppendItem(menu, "Add/Update ValueList", Menu_DoClick);
-            Menu_AppendSeparator(menu);
+            //Menu_AppendItem(menu, "Add/Update ValueList", Menu_DoClick);
+            //Menu_AppendSeparator(menu);
             ToolStripMenuItem item = Menu_AppendItem(menu, "override warning", Menu_OverrideClicked, true, Override);
             item.ToolTipText = "select to disable pop-up window warning.";
         }
@@ -206,6 +203,7 @@ namespace Drafthorse.Component.Layout.List3
         }
         #endregion
 
+        /*
         #region Add Value Lists
 
         private void Menu_DoClick(object sender, EventArgs e)
@@ -278,5 +276,6 @@ namespace Drafthorse.Component.Layout.List3
 
 
         #endregion AutoValueList
+         */
     }
 }

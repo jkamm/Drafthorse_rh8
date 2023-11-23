@@ -107,7 +107,7 @@ namespace Drafthorse.Component.Layout.List2
             scale = Math.Min(scale, 1000);
             scale = Math.Max(scale, 0.001);
 
-            Rhino.Commands.Result result = new Rhino.Commands.Result();
+            //Rhino.Commands.Result result = new Rhino.Commands.Result();
             Tuple<bool, string> layoutResult = new Tuple<bool, string>(false, string.Empty);
 
 

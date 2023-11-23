@@ -1,42 +1,37 @@
 ﻿using Grasshopper.Kernel;
 using System;
-//using System.Xml.Linq;
 
 namespace Drafthorse.Component
 {
-    public class MakePageActive : Base.DH_ButtonComponent
+    public class MakePageActive_OBSOLETE : Base.DH_ButtonComponent
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public MakePageActive()
+        public MakePageActive_OBSOLETE()
           : base("Make Page Active", "Active Page",
               "Make a page active (primarily for Baking)",
-              "Drafthorse", "Layout")
+              "DraftHorse", "Layout")
         {
             ButtonName = "Activate";
         }
 
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
-        int in_page;
-
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             var bToggleParam = new Params.Param_BooleanToggle();
             pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
             Params.Input[0].Optional = true;
-            //pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts", GH_ParamAccess.item);
-            var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
-            in_page = pManager.AddParameter(pageParam, "Page", "P", "Layout Page(s) to make active", GH_ParamAccess.item);
+            pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.Register_BooleanParam("Result", "R", "Result of Operation");
             pManager.Register_StringParam("Name", "N", "Active Layout Name");
@@ -53,12 +48,8 @@ namespace Drafthorse.Component
             bool result = false;
             string name = null;
 
-            Grasshopper.Rhinoceros.Display.ModelPageViewport page = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
-            DA.GetData(in_page, ref page);
-
-            int? LayoutIndex = page.PageNumber;
-            if (LayoutIndex == null) return;
-            //DA.GetData("Index", ref LayoutIndex);
+            int LayoutIndex = 0;
+            if (!DA.GetData("Index", ref LayoutIndex)) return;
 
             bool run = false;
             DA.GetData("Run", ref run);
@@ -76,7 +67,7 @@ namespace Drafthorse.Component
 
             if (run || Execute)
             {
-                Rhino.Display.RhinoPageView activePage = Helper.Layout.GetPage((int)LayoutIndex);
+                Rhino.Display.RhinoPageView activePage = Helper.Layout.GetPage(LayoutIndex);
                 Rhino.RhinoDoc.ActiveDoc.Views.ActiveView = activePage;
                 result = true;
                 name = activePage.PageName;
@@ -96,7 +87,7 @@ namespace Drafthorse.Component
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("dc6c6204-0925-4918-8c7b-5f9901ba8e6e"); }
+            get { return new Guid("BB2E2A26-F6E8-45A3-A31A-F20AF37A727B"); }
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Drafthorse.Component.Layout.List2
             scale = Math.Min(scale, 1000);
             scale = Math.Max(scale, 0.001);
 
-            Rhino.Commands.Result result = new Rhino.Commands.Result();
+            //Rhino.Commands.Result result = new Rhino.Commands.Result();
             Tuple<bool, string> layoutResult = new Tuple<bool, string>(false, string.Empty);
             
             Rhino.Display.RhinoPageView[] layout = new Rhino.Display.RhinoPageView[1];
@@ -120,15 +120,6 @@ namespace Drafthorse.Component.Layout.List2
             {
 
                 Rhino.RhinoDoc.ActiveDoc.AdjustPageUnitSystem(pageUnits, false);
-
-                //result = Layout.AddLayout(pageName, width, height, target, detailCount, scale, out layout[0]);
-
-                /*
-                if (result != Rhino.Commands.Result.Success)
-                {
-                    return;
-                }
-                 */
                 layoutResult = Helper.Layout.AddNewLayout(pageName, width, height, target, detailCount, scale, out layout[0]);
 
                 if (!layoutResult.Item1)
@@ -136,8 +127,7 @@ namespace Drafthorse.Component.Layout.List2
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, layoutResult.Item2);
                     return;
                 }
-                //layoutIndex = layout[0].PageNumber.ToString();
-                //layoutName = layout[0].PageName;
+                
                 newPage = new Grasshopper.Rhinoceros.Display.ModelPageViewport(layout[0].MainViewport);
                 if (layout[0] != null) DA.SetData("Page", newPage); 
             }

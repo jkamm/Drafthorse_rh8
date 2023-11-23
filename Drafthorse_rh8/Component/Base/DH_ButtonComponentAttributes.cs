@@ -30,9 +30,7 @@ namespace Drafthorse.Component.Base
             ButtonPressed += owner.OnButtonActivate;
         }
 
-        //public GH_Capsule button = null;
-
-        protected override void Layout()
+       protected override void Layout()
         {
             Bounds = RectangleF.Empty;
             base.Layout();
@@ -64,7 +62,6 @@ namespace Drafthorse.Component.Base
             {
                 GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(GH_Palette.Black, Selected, Owner.Locked, hidden: true);
                 GH_Capsule gH_Capsule = GH_Capsule.CreateTextCapsule(buttonArea, textArea, GH_Palette.Black, (Owner as DH_ButtonComponent).ButtonName, 2, 9);
-                //GH_Capsule gH_Capsule = GH_Capsule.CreateTextCapsule(buttonArea, textArea, GH_Palette.Black, "Update", 2, 9);
                 gH_Capsule.RenderEngine.RenderBackground(graphics, canvas.Viewport.Zoom, impliedStyle);
                 if (!mouseDown)
                 {
@@ -87,7 +84,6 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseMove(sender, e);
             }
-            //if (ButtonBounds.Contains(point))
             if (buttonArea.Contains(point))
             {
                 if (!mouseOver)
@@ -111,7 +107,6 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseUp(sender, e);
             }
-            //if (!ButtonBounds.Contains(e.CanvasLocation))
             if (!buttonArea.Contains(e.CanvasLocation))
             {
                 mouseDown = false;
@@ -130,8 +125,7 @@ namespace Drafthorse.Component.Base
             {
                 return base.RespondToMouseDown(sender, e);
             }
-            //if (!ButtonBounds.Contains(e.CanvasLocation))
-                if (!buttonArea.Contains(e.CanvasLocation))
+           if (!buttonArea.Contains(e.CanvasLocation))
 {
                     return base.RespondToMouseDown(sender, e);
             }

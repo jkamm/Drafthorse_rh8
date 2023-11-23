@@ -75,7 +75,7 @@ namespace Drafthorse.Component.Layout.List2
             //This would have to modify the ratio of modelToPage as well.  
 
             string layoutName = string.Empty;
-            int layoutIndex = new int();
+            //int layoutIndex = new int();
 
             if (run || Execute)
             {

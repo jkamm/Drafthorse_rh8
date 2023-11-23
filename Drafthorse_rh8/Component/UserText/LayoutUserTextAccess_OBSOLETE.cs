@@ -1,31 +1,26 @@
-﻿using Drafthorse.Helper;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using System;
 
 namespace Drafthorse.Component.UserText
 {
-    public class LayoutUserTextAccess : GH_Component
+    public class LayoutUserTextAccess_OBSOLETE : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the AccessLayoutUserText class.
         /// </summary>
-        public LayoutUserTextAccess()
+        public LayoutUserTextAccess_OBSOLETE()
           : base("Access Layout UserText", "GetLOValue",
               "Get Value for a Key on a Layout",
               "Drafthorse", "User Text")
         {
         }
         public override GH_Exposure Exposure => GH_Exposure.secondary;
-        int in_page;
-
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
-            in_page = pManager.AddParameter(pageParam, "Page", "P", "Layout Page(s) to make active", GH_ParamAccess.item); 
-            //pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts. \nGet using 'Get Layout Index'", GH_ParamAccess.item);
+            pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts. \nGet using 'Get Layout Index'", GH_ParamAccess.item);
             pManager.AddTextParameter("Keys", "K", "Key(s) to return Value for.", GH_ParamAccess.item);
 
         }
@@ -44,12 +39,8 @@ namespace Drafthorse.Component.UserText
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Grasshopper.Rhinoceros.Display.ModelPageViewport page = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
-            DA.GetData(in_page, ref page);
-            if (page.PageNumber == null) return;
-
-            int index = (int)page.PageNumber;
-            //DA.GetData("Index", ref index);
+            int index = new int();
+            DA.GetData("Index", ref index);
 
             string iKey = string.Empty;
             DA.GetData("Keys", ref iKey);

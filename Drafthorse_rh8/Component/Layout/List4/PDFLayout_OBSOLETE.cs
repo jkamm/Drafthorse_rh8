@@ -1,22 +1,22 @@
-﻿//using Drafthorse.Helper;
+﻿using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Rhino;
 using Rhino.Display;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using static Drafthorse.Helper.ValList;
+using static Drafthorse.Helper.ValList;
 
 
 namespace Drafthorse.Component
 {
-    public class PDFLayout : Base.DH_ButtonComponent
+    public class PDFLayout_OBSOLETE : Base.DH_ButtonComponent
     {
         #region GH_Component
         /// <summary>
         /// Initializes a new instance of the PDFLayout class.
         /// </summary>
-        public PDFLayout()
+        public PDFLayout_OBSOLETE()
           : base("PDF Layout", "DH pdf",
               "Print one or more Layouts to one or more PDFs",
               "Drafthorse", "Layout")
@@ -26,33 +26,25 @@ namespace Drafthorse.Component
 
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
-        int in_page;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             //need to add default behavior for no indices - print all
-            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Set to true to Print \nUse Toggle only (not Button)", GH_ParamAccess.item);
-            //Params.Input[pManager.AddIntegerParameter("LayoutIndex", "Li[]", "List of Indices for Layouts to Print to PDF \nAttach Value List for list of Layouts", GH_ParamAccess.list)].Optional = true;
-            var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
-            in_page = pManager.AddParameter(pageParam, "Pages", "P", "Layout Page(s) to print\nPages in the same branch print to the same file", GH_ParamAccess.list);
-            var filePath = new Grasshopper.Kernel.Parameters.Param_FilePath();
+            var bToggleParam = new Drafthorse.Params.Param_BooleanToggle();
+            Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "Set to true to Print \nUse Toggle only (not Button)", GH_ParamAccess.item)].Optional = true; 
+            Params.Input[pManager.AddIntegerParameter("LayoutIndex", "Li[]", "List of Indices for Layouts to Print to PDF \nAttach Value List for list of Layouts", GH_ParamAccess.list)].Optional = true;
+            Grasshopper.Kernel.Parameters.Param_FilePath filePath = new Grasshopper.Kernel.Parameters.Param_FilePath();
             pManager.AddParameter(filePath, "Folder", "F", "Target Folder to Save PDFs \nWill create if it does not exist", GH_ParamAccess.item);
             pManager.AddTextParameter("Filename", "N", "Filename", GH_ParamAccess.item, "Layout");
-            pManager.AddIntegerParameter("DPI", "DPI", "Print Resolution (72-1200) Default is 100", GH_ParamAccess.item, 100);
-            pManager.AddIntegerParameter("ColorMode", "C", "0 = Black&White\n1 = Display Color\n2 = Print Color", GH_ParamAccess.item, 0);
-            pManager.AddBooleanParameter("UsePrintWidths", "U", "Use defined print widths (False prints Display values) ", GH_ParamAccess.item, true);
-            pManager.AddNumberParameter("DefaultWidth", "D", "Set default print width for undefined", GH_ParamAccess.item, 0.1);
-            pManager.AddNumberParameter("WireScale", "W", "Scale width of curves in print", GH_ParamAccess.item, 1);
-
-            pManager[0].Optional = true;
-            pManager[4].Optional = true;
-            pManager[5].Optional = true;
-            pManager[6].Optional = true;
-            pManager[7].Optional = true;
-            pManager[8].Optional = true;
+            Params.Input[pManager.AddIntegerParameter("DPI", "DPI", "Print Resolution (72-1200) Default is 100", GH_ParamAccess.item, 100)].Optional = true;
+            Params.Input[pManager.AddIntegerParameter("ColorMode", "C", "0 = Black&White\n1 = Display Color\n2 = Print Color", GH_ParamAccess.item, 0)].Optional = true;
+            Params.Input[pManager.AddBooleanParameter("UsePrintWidths", "U", "Use defined print widths (False prints Display values) ", GH_ParamAccess.item, true)].Optional = true;
+            Params.Input[pManager.AddNumberParameter("DefaultWidth", "D", "Set default print width for undefined", GH_ParamAccess.item, 0.1)].Optional = true;
+            Params.Input[pManager.AddNumberParameter("WireScale", "W", "Scale width of curves in print", GH_ParamAccess.item, 1)].Optional = true;
+            
 
         }
           
@@ -73,12 +65,8 @@ namespace Drafthorse.Component
             bool run = false;
             DA.GetData("Run", ref run);
 
-            //List<int> indexList = new List<int>();
-            //DA.GetDataList("LayoutIndex", indexList);
-            List<Grasshopper.Rhinoceros.Display.ModelPageViewport> pageList = new List<Grasshopper.Rhinoceros.Display.ModelPageViewport>();
-            DA.GetDataList(in_page, pageList);
-
-            List<int> indexList = pageList.Select(i => (int)i.PageNumber).ToList();
+            List<int> indexList = new List<int>();
+            DA.GetDataList("LayoutIndex", indexList);
 
             string folder = String.Empty;
             if (!DA.GetData("Folder", ref folder)) return;
@@ -210,11 +198,10 @@ namespace Drafthorse.Component
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("8e0c095d-7928-4c03-bff8-750ac7938406"); }
+            get { return new Guid("9cc1fc76-ddd4-467d-846f-3206f1165ad5"); }
         }
         #endregion GH_Component
 
-        /*
         #region Add Value Lists
         protected override void AppendAdditionalComponentMenuItems(System.Windows.Forms.ToolStripDropDown menu)
         {
@@ -291,6 +278,5 @@ namespace Drafthorse.Component
 
 
         #endregion AutoValueList
-         */
     }
 }

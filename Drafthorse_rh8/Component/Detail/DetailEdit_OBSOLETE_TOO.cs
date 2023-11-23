@@ -80,7 +80,7 @@ namespace Drafthorse.Component.Detail
 
             Guid detailGUID = Guid.Empty;
             DA.GetData("Detail GUID", ref detailGUID);
-            if (detailGUID == null) { return; }
+            if (detailGUID == Guid.Empty) { return; }
             Rhino.DocObjects.DetailViewObject detail = Rhino.RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
 
 

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Grasshopper.Kernel;
-
 using System.Linq;
-using Drafthorse.Helper;
 using static Drafthorse.Helper.Layout;
-using static Drafthorse.Helper.ValList;
-using Rhino.Geometry;
 
 namespace Drafthorse.Component.Layout.List3
 {
@@ -31,12 +26,12 @@ namespace Drafthorse.Component.Layout.List3
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            var bToggleParam = new Drafthorse.Params.Param_BooleanToggle();
+            var bToggleParam = new Params.Param_BooleanToggle();
             Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
             //get a layout by layout index (or several by layoutName)
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             in_page = pManager.AddParameter(pageParam, "Layout Page", "P", "Input Layout Page", GH_ParamAccess.item);
-            Params.Input[pManager.AddIntegerParameter("Index", "i", "Index of a Layout", GH_ParamAccess.item)].Optional = true;
+            //Params.Input[pManager.AddIntegerParameter("Index", "i", "Index of a Layout", GH_ParamAccess.item)].Optional = true;
             Params.Input[pManager.AddTextParameter("Name", "N", "PageName", GH_ParamAccess.item)].Optional = true;
             Params.Input[pManager.AddNumberParameter("Width", "W", "PageWidth", GH_ParamAccess.item)].Optional = true;
             Params.Input[pManager.AddNumberParameter("Height", "H", "PageHeight", GH_ParamAccess.item)].Optional = true;
@@ -66,8 +61,10 @@ namespace Drafthorse.Component.Layout.List3
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            /*
             int index = new int();
             DA.GetData("Index", ref index);
+             */
 
             var page = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
             DA.GetData(in_page, ref page);
@@ -123,6 +120,7 @@ namespace Drafthorse.Component.Layout.List3
                     target.PageName = newPageName;
                     target.PageWidth = newPageWidth;
                     target.PageHeight = newPageHeight;
+                    //target.PageNumber = (int)newPageNumber;
                 }
 
                 int pageNumber = target.PageNumber;
