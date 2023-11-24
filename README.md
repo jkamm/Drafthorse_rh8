@@ -9,6 +9,7 @@ v0.0.1-beta
 - initial release, based on Drafthorse_gh 0.4.0
 - includes versions of rh7 Drafthorse_gh components, usually as OBSOLETE
 - some components have been updated to use Param_ModelPageView and Param_ModelView (new GH types in Rhino 8)
+  
 v0.0.3-beta
 - complete switch to PageLayouts as input/output types
 - Adds "Scale" input to BoundingBox Layout
