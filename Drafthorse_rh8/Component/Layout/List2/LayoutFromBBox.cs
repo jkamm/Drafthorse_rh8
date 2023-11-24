@@ -18,7 +18,7 @@ namespace Drafthorse.Component.Layout.List2
               "Generate a Layout with a single detail using a bounding rectangle",
               "Drafthorse", "Layout")
         {
-            ButtonName = "Generate";
+            ButtonName = "Make";
         }
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -32,7 +32,9 @@ namespace Drafthorse.Component.Layout.List2
             Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
             Params.Input[pManager.AddTextParameter("Name", "N", "PageName for new layout", GH_ParamAccess.item)].Optional = true;
             pManager.AddRectangleParameter("BBox", "B", "Bounding Box target for single detail per Layout", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Scale", "S", "Scale of paper space to model space\n1/8 = 1in on layout to 8in in model", GH_ParamAccess.item, 1);
             //goal: Add view as option for setting projection, default of Plan View.  Rectangle may need to change to Box
+            //pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -66,11 +68,14 @@ namespace Drafthorse.Component.Layout.List2
             Rectangle3d detailRec = new Rectangle3d();
             if (!DA.GetData("BBox", ref detailRec)) return;
 
+            double in_scale = 1;
+            DA.GetData("Scale", ref in_scale);
+            if (in_scale <= 0) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Scale cannot be less than or equal to 0");
 
             double width = detailRec.X.Length;
             double height = detailRec.Y.Length;
 
-            double scale = 1;
+            double scale = in_scale;
             //goal: add scale to input?  then someone could generate reduced size version of a layout, even a standard size, with added scale. 
             //This would have to modify the ratio of modelToPage as well.  
 
@@ -91,7 +96,7 @@ namespace Drafthorse.Component.Layout.List2
                 Rhino.Display.RhinoPageView[] layout = new Rhino.Display.RhinoPageView[1];
 
                 Rhino.RhinoDoc.ActiveDoc.AdjustPageUnitSystem(pageUnits, true);
-                double modelToPage = Rhino.RhinoMath.UnitScale(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem, pageUnits);
+                double modelToPage = Rhino.RhinoMath.UnitScale(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem, pageUnits)*scale;
                 width *= modelToPage;
                 height *= modelToPage;
                 scale = modelToPage;

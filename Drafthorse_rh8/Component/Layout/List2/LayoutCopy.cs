@@ -14,7 +14,7 @@ namespace Drafthorse.Component.Layout.List2
               "Instantiate a Layout from a template in the document",
               "Drafthorse", "Layout")
         {
-            ButtonName = "Copy";
+            ButtonName = "Make";
         }
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 

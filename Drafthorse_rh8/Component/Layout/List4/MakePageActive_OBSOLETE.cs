@@ -16,7 +16,7 @@ namespace Drafthorse.Component
             ButtonName = "Activate";
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

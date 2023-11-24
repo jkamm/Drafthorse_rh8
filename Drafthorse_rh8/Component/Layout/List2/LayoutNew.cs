@@ -17,7 +17,7 @@ namespace Drafthorse.Component.Layout.List2
               "Create a new layout from scratch",
               "Drafthorse", "Layout")
         {
-            ButtonName = "Create";
+            ButtonName = "Make";
         }
         public override GH_Exposure Exposure => GH_Exposure.secondary;
         /// <summary>

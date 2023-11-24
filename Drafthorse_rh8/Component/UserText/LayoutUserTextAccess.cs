@@ -77,7 +77,7 @@ namespace Drafthorse.Component.UserText
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("0224137f-3de8-411c-815a-69554f5e8b15"); }
+            get { return new Guid("4656efb1-7689-463b-bdab-98deb8d98135"); }
         }
     }
 }

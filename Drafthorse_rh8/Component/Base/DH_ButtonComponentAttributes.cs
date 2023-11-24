@@ -4,6 +4,8 @@ using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Grasshopper.Kernel.Attributes;
+
 
 namespace Drafthorse.Component.Base
 {
@@ -19,6 +21,8 @@ namespace Drafthorse.Component.Base
 
         private RectangleF textArea;
 
+        public bool Complete { get; set; }
+
         //GH_Component thisowner = null;
 
         public DH_ButtonComponentAttributes(DH_ButtonComponent owner) : base(owner)
@@ -28,6 +32,7 @@ namespace Drafthorse.Component.Base
             mouseDown = false;
             Active = false;
             ButtonPressed += owner.OnButtonActivate;
+            Complete = false;
         }
 
        protected override void Layout()
@@ -75,6 +80,10 @@ namespace Drafthorse.Component.Base
                 gH_Capsule.RenderEngine.RenderText(graphics, Color.White);
                 gH_Capsule.Dispose();
             }
+
+            
+            
+            
         }
 
         public override GH_ObjectResponse RespondToMouseMove(GH_Canvas sender, GH_CanvasMouseEvent e)

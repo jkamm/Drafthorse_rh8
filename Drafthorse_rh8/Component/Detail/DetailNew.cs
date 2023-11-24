@@ -27,7 +27,7 @@ namespace Drafthorse.Component.Detail
               "Add a new detail to an existing layout",
               "Drafthorse", "Detail")
         {
-            ButtonName = "Create";
+            ButtonName = "Make";
         }
         
         //This hides the component from view!  is it callable?  Don't know.

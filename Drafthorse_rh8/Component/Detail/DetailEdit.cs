@@ -4,6 +4,7 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Rhinoceros.Display;
 using Rhino.Display;
 using Rhino.Geometry;
+using Rhino.UI.DialogPanels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,9 @@ namespace Drafthorse.Component.Detail
             pManager.AddParameter(bToggle, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
             var guidParam = new Param_Guid();
             pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
-            pManager.AddTextParameter("Display", "D[]", "Display Mode \nAttach Value List for list of Display Modes", GH_ParamAccess.item);
-            
+            //pManager.AddTextParameter("Display", "D[]", "Display Mode \nAttach Value List for list of Display Modes", GH_ParamAccess.item);
+            var displayParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelDisplayMode();
+            pManager.AddParameter(displayParam, "Display", "D", "Model Display Mode", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
             //pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit\nOverrides Target to set scale\nOverrides View", GH_ParamAccess.item);
@@ -146,6 +148,7 @@ namespace Drafthorse.Component.Detail
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, pNum + " is not a valid Projection number. Projection will not be modified");
             DefinedViewportProjection projection = (DefinedViewportProjection)pNum;
             
+            /*
             string dName = string.Empty;
             if (!DA.GetData("Display", ref dName)) dName = detail.Viewport.DisplayMode.EnglishName;
 
@@ -155,7 +158,14 @@ namespace Drafthorse.Component.Detail
             
             if (!ValList.GetDisplaySettingsList(false).Contains(dName))
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, dName + " is not a valid Display Mode name");
-            
+             */
+
+            ModelDisplayMode dMode = new ModelDisplayMode();
+            DA.GetData("Display", ref dMode);
+
+            string dName = dMode.DisplayName;
+            if (dName == null) dName = detail.Viewport.DisplayMode.EnglishName;
+
             DisplayModeDescription displayMode = DisplayModeDescription.GetDisplayModes().First(mode => mode.DisplayAttributes.EnglishName == dName);
 
             ModelView view = new ModelView();

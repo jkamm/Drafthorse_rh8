@@ -24,7 +24,7 @@ namespace Drafthorse.Component
             ButtonName = "Print";
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
 
         /// <summary>
