@@ -1,10 +1,13 @@
 ﻿//using Drafthorse.Helper;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Rhino;
 using Rhino.Display;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Grasshopper.Rhinoceros.Drafting.Params;
+using Grasshopper.Rhinoceros.Drafting;
 //using static Drafthorse.Helper.ValList;
 
 
@@ -27,6 +30,7 @@ namespace Drafthorse.Component
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         int in_page;
+        int in_draftingLine;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -35,16 +39,17 @@ namespace Drafthorse.Component
         {
             //need to add default behavior for no indices - print all
             pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Set to true to Print \nUse Toggle only (not Button)", GH_ParamAccess.item);
-            //Params.Input[pManager.AddIntegerParameter("LayoutIndex", "Li[]", "List of Indices for Layouts to Print to PDF \nAttach Value List for list of Layouts", GH_ParamAccess.list)].Optional = true;
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             in_page = pManager.AddParameter(pageParam, "Pages", "P", "Layout Page(s) to print\nPages in the same branch print to the same file", GH_ParamAccess.list);
-            var filePath = new Grasshopper.Kernel.Parameters.Param_FilePath();
-            pManager.AddParameter(filePath, "Folder", "F", "Target Folder to Save PDFs \nWill create if it does not exist", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_FilePath(), "Folder", "F", "Target Folder to Save PDFs \nWill create if it does not exist", GH_ParamAccess.item);
             pManager.AddTextParameter("Filename", "N", "Filename", GH_ParamAccess.item, "Layout");
             pManager.AddIntegerParameter("DPI", "DPI", "Print Resolution (72-1200) Default is 100", GH_ParamAccess.item, 100);
             pManager.AddIntegerParameter("ColorMode", "C", "0 = Black&White\n1 = Display Color\n2 = Print Color", GH_ParamAccess.item, 0);
             pManager.AddBooleanParameter("UsePrintWidths", "U", "Use defined print widths (False prints Display values) ", GH_ParamAccess.item, true);
-            pManager.AddNumberParameter("DefaultWidth", "D", "Set default print width for undefined", GH_ParamAccess.item, 0.1);
+            var draftingLine = new Param_ObjectDraftingLineWidth();
+            draftingLine.AddVolatileData(new Grasshopper.Kernel.Data.GH_Path(0), 0, new ObjectDraftingLineWidth(0.13));
+            in_draftingLine = pManager.AddParameter(draftingLine, "DraftingLineWidth", "D", "Set default print width for undefined lines\nOnly values used", GH_ParamAccess.item);
+            //pManager.AddNumberParameter("DefaultWidth", "D", "Set default print width for undefined", GH_ParamAccess.item, 0.1);
             pManager.AddNumberParameter("WireScale", "W", "Scale width of curves in print", GH_ParamAccess.item, 1);
 
             pManager[0].Optional = true;
@@ -54,6 +59,16 @@ namespace Drafthorse.Component
             pManager[7].Optional = true;
             pManager[8].Optional = true;
 
+            Param_Integer obj2 = (Param_Integer)pManager[4];
+            obj2.AddNamedValue("Low (100)", 100);
+            obj2.AddNamedValue("Medium (600)", 600);
+            obj2.AddNamedValue("High (1200)", 1200);
+
+            Param_Integer obj = (Param_Integer)pManager[5];
+            obj.AddNamedValue("Black & White", 0);
+            obj.AddNamedValue("Display Color", 1);
+            obj.AddNamedValue("Print Color", 2);
+
         }
           
         /// <summary>
@@ -62,6 +77,8 @@ namespace Drafthorse.Component
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Result", "R", "FilePath on Success", GH_ParamAccess.list);
+            //goal: change to file path as output?
+            //pManager.AddParameter(new Param_FilePath(), "Path", "P", "FilePath on Success", GH_ParamAccess.list); 
         }
 
         /// <summary>
@@ -116,7 +133,12 @@ namespace Drafthorse.Component
             if (!DA.GetData("UsePrintWidths", ref usePrintWidths)) usePrintWidths = true;
 
             double defaultPrintWidth = 0.1;
-            if (!DA.GetData("DefaultWidth", ref defaultPrintWidth)) defaultPrintWidth = 0.1;
+            //if (!DA.GetData("DefaultWidth", ref defaultPrintWidth)) defaultPrintWidth = 0.1;
+
+            Grasshopper.Rhinoceros.Drafting.ObjectDraftingLineWidth lineWidth = new Grasshopper.Rhinoceros.Drafting.ObjectDraftingLineWidth();
+            DA.GetData(in_draftingLine, ref lineWidth);
+            if (lineWidth.IsValid) defaultPrintWidth = (double)lineWidth.Width;
+
 
             double wireScale = 1.0;
             if (!DA.GetData("WireScale", ref wireScale)) wireScale = 1.0;

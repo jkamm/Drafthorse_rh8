@@ -80,7 +80,8 @@ namespace Drafthorse.Component.Layout.List3
             if (target != null)
             {
                 int? newPageNumber = null;
-                if (!DA.GetData("Index", ref newPageNumber)) newPageNumber = target.PageNumber;
+                //if (!DA.GetData("Index", ref newPageNumber))
+                newPageNumber = target.PageNumber;
 
                 string newPageName = string.Empty;
                 if (!DA.GetData("Name", ref newPageName)) newPageName = target.PageName;

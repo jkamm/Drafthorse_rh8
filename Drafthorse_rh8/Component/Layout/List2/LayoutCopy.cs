@@ -18,6 +18,8 @@ namespace Drafthorse.Component.Layout.List2
         }
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
+        int in_name;
+
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
@@ -27,10 +29,10 @@ namespace Drafthorse.Component.Layout.List2
             pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
             var layoutParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             pManager.AddParameter(layoutParam, "Template", "T", "Template Layout", GH_ParamAccess.item);
-            pManager.AddTextParameter("NewName", "N", "Name of Copy", GH_ParamAccess.item);
+            in_name = pManager.AddTextParameter("NewName", "N", "Name of Copy", GH_ParamAccess.item);
             
             Params.Input[0].Optional = true;
-            Params.Input[2].Optional = true;
+            Params.Input[in_name].Optional = true;
         }
 
         /// <summary>
@@ -78,10 +80,10 @@ namespace Drafthorse.Component.Layout.List2
                 Rhino.Display.RhinoPageView dup = template.Duplicate(true);
 
                 //if no newName is defined, then set newName to template + PageNumber
-                if (!DA.GetData("NewName", ref newName)) newName = template.PageName + "." + dup.PageNumber.ToString();
+                if (!DA.GetData(in_name, ref newName)) newName = template.PageName + "." + dup.PageNumber.ToString();
 
                 //rename duplicate
-                //dup.PageName = newName;
+                dup.PageName = newName;
                 //int newIndex = dup.PageNumber;
                 RefreshView(dup);
 

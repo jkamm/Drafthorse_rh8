@@ -20,13 +20,16 @@ namespace Drafthorse.Component.Layout.List3
         }
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        int in_page;
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddBooleanParameter("Run", "R", "Run the Drafthorse", GH_ParamAccess.item, false);
-            pManager.AddIntegerParameter("Index", "Li", "Indexed Layout to change", GH_ParamAccess.item);
+            //pManager.AddIntegerParameter("Index", "Li", "Indexed Layout to change", GH_ParamAccess.item);
+            var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
+            in_page = pManager.AddParameter(pageParam, "Layout Page", "P", "Input Layout Page", GH_ParamAccess.item);
             pManager.AddTextParameter("Name", "N", "Names of Text Objects to replace", GH_ParamAccess.list);
             pManager.AddTextParameter("Text", "T", "New Text for Text Objects", GH_ParamAccess.list);
         }
@@ -48,6 +51,9 @@ namespace Drafthorse.Component.Layout.List3
             bool run = false;
             DA.GetData("Run", ref run);
 
+            var thisPage = new Grasshopper.Rhinoceros.Display.ModelPageViewport();
+            DA.GetData(in_page, ref thisPage);
+            
             //DA.GetData("Layout", ref name);
 
             List<string> textKeys = new List<string>();
@@ -56,8 +62,8 @@ namespace Drafthorse.Component.Layout.List3
             List<string> textVals = new List<string>();
             DA.GetDataList("Text", textVals);
 
-            int index = new int();
-            DA.GetData("Index", ref index);
+            if (thisPage.PageNumber == null) return;
+            int index = (int)thisPage.PageNumber;
 
             #region EscapeBehavior
             //Esc behavior code snippet from 
