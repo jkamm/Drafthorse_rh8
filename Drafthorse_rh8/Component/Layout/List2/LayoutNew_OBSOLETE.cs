@@ -2,9 +2,6 @@
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 using static Drafthorse.Helper.ValList;
 
 namespace Drafthorse.Component.Layout.List2

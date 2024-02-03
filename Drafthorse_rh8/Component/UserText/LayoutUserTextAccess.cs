@@ -1,5 +1,4 @@
-﻿using Drafthorse.Helper;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using System;
 
 namespace Drafthorse.Component.UserText

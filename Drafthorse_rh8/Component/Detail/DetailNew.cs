@@ -42,11 +42,8 @@ namespace Drafthorse.Component.Detail
             var bToggle = new Params.Param_BooleanToggle();
             Params.Input[pManager.AddParameter(bToggle, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
             pManager.AddParameter(new Param_ModelPageViewport(), "Layout Page", "P", "Layout Page to add detail", GH_ParamAccess.item);
-            //pManager.AddIntegerParameter("Index", "Li[]", "Layout index for new detail\nAdd ValueList to get list of layouts", GH_ParamAccess.item);
             pManager.AddRectangleParameter("Bounds", "B", "Detail Boundary Rectangle on Layout Page", GH_ParamAccess.item);
-            //var displayParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelDisplayMode();
-            //pManager.AddParameter(displayParam, "Display", "D", "Model Display Mode", GH_ParamAccess.item);
-            pManager.AddTextParameter("Display", "D[]", "Display Mode \nAttach Value List for list of Display Modes", GH_ParamAccess.item, "Wireframe");
+            pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item, 1);
             pManager.AddIntegerParameter("Projection", "P[]", "View Projection \nAttach Value List for list of projections", GH_ParamAccess.item, 0);
@@ -82,13 +79,9 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Result", "R", "Success or Failure for each detail", GH_ParamAccess.item);
-            //pManager.AddIntegerParameter("Index", "Li", "Index of Layout detail was created on", GH_ParamAccess.item);
-            //pManager.AddParameter(new Param_ModelPageViewport(), "Layout Page", "P", "Detail's Layout Page", GH_ParamAccess.item);
-            //var guidParam = new Param_Guid();
-            //pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+           
             pManager.AddGenericParameter("Detail", "D", "Referenced Detail Object", GH_ParamAccess.item);
-            //pManager.AddTextParameter("Display", "D", "Display Mode", GH_ParamAccess.item);
-            
+                       
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D", "Model Display Mode", GH_ParamAccess.item);
 
             pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
@@ -150,21 +143,13 @@ namespace Drafthorse.Component.Detail
 
             DefinedViewportProjection projection = (DefinedViewportProjection)pNum;
 
-            string dName = string.Empty;
-            DA.GetData("Display", ref dName);
-            DisplayModeDescription displayMode = null;
+            ModelDisplayMode dMode = new ModelDisplayMode();
+            DA.GetData("Display", ref dMode);
 
-            //convert LocalName to EnglishName
-            if (ValList.GetDisplaySettingsList(true).Contains(dName))
-                dName = ValList.GetDisplaySettingsList(false)[ValList.GetDisplaySettingsList(true).IndexOf(dName)];
+            string dName = dMode.DisplayName;
+            if (dName == null) dName = DisplayModeDescription.FindByName("Wireframe").EnglishName;
 
-            if (!ValList.GetDisplaySettingsList(false).Contains(dName))
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, dName + " is not a valid Display Mode name");
-            else
-            {
-                //Change to type DisplayModeDescription
-                displayMode = DisplayModeDescription.GetDisplayModes().First(mode => mode.DisplayAttributes.EnglishName == dName);
-            }
+            DisplayModeDescription displayMode = DisplayModeDescription.FindByName(dName);
 
             RhinoDoc doc = RhinoDoc.ActiveDoc;
 
@@ -180,7 +165,7 @@ namespace Drafthorse.Component.Detail
             else
             {
                 //need a default view for view to start with - can't set attributes on a null object
-                view = new Grasshopper.Rhinoceros.Display.ModelView(new Rhino.DocObjects.ViewportInfo(RhinoDoc.ActiveDoc.Views.GetStandardRhinoViews()[0].MainViewport));
+                view = new ModelView(new Rhino.DocObjects.ViewportInfo(RhinoDoc.ActiveDoc.Views.GetStandardRhinoViews()[0].MainViewport));
                 view.ToViewportInfo().TargetPoint = targetBBox.IsValid ? targetBBox.Center : view.ToViewportInfo().TargetPoint;
                 switch (projection)
                 {

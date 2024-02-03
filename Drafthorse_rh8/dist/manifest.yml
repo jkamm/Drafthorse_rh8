@@ -1,11 +1,11 @@
 ---
 name: DraftHorse
-version: 0.0.2-beta
+version: 0.1.0-beta
 authors:
 - Jo Kamm
 description: >
   Tools for generating and managing Rhino Layouts programmatically through Grasshopper
-url: https://github.com/jkamm/DraftHorse_gh
+url: https://github.com/jkamm/DraftHorse_rh8
 icon: icon.png
 keywords:
   - layouts

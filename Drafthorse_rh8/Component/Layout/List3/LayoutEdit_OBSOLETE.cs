@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Grasshopper.Kernel;
-
 using System.Linq;
-using Drafthorse.Helper;
 using static Drafthorse.Helper.Layout;
 using static Drafthorse.Helper.ValList;
-using Rhino.Geometry;
-using System.Windows.Forms;
+
 
 namespace Drafthorse.Component.Layout.List3
 {

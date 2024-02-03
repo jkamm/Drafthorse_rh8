@@ -35,12 +35,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="IOComponents">
-      <HintPath>..\..\..\..\..\..\Program Files\Rhino 7\Plug-ins\Grasshopper\Components\IOComponents.gha</HintPath>
-    </Reference>
-  </ItemGroup>
-  
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

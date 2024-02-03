@@ -2,9 +2,9 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Rhinoceros.Display;
+using Grasshopper.Rhinoceros.Display.Params;
 using Rhino.Display;
 using Rhino.Geometry;
-using Rhino.UI.DialogPanels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,19 +34,13 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            var bToggle = new Params.Param_BooleanToggle();
-            pManager.AddParameter(bToggle, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
-            var guidParam = new Param_Guid();
-            pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
-            //pManager.AddTextParameter("Display", "D[]", "Display Mode \nAttach Value List for list of Display Modes", GH_ParamAccess.item);
-            var displayParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelDisplayMode();
-            pManager.AddParameter(displayParam, "Display", "D", "Model Display Mode", GH_ParamAccess.item);
+            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
-            //pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit\nOverrides Target to set scale\nOverrides View", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Projection", "P[]", "View Projection \nAttach Value List for list of projections\nOverrides View", GH_ParamAccess.item);
-
-            var viewParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelView();
+            var viewParam = new Param_ModelView();
             viewParam.Hidden = true;
             pManager.AddParameter(viewParam, "View", "V", "Model View\nGood for Named and Perspective Views", GH_ParamAccess.item);
           
@@ -76,18 +70,14 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Result", "R", "Success or Failure for each detail", GH_ParamAccess.item);
-            var guidParam = new Param_Guid();
-            pManager.AddParameter(guidParam, "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
-            pManager.AddTextParameter("Display", "D", "Display Mode", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D", "Model Display Mode", GH_ParamAccess.item);
             pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item);
             pManager.AddTextParameter("Projection", "P", "Viewport Projection", GH_ParamAccess.item);
-
-            var viewParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelView();
+            var viewParam = new Param_ModelView();
             viewParam.Hidden = true;
             pManager.AddParameter(viewParam, "View", "V", "Detail View", GH_ParamAccess.item);
-            /*
-             */
         }
 
         /// <summary>
@@ -112,9 +102,7 @@ namespace Drafthorse.Component.Detail
 
             //used for qualified override
             bool targetDefined = false;
-            /*
-            bool scaleDefined = false;
-            */
+   
 
             Guid detailGUID = Guid.Empty;
             DA.GetData("GUID", ref detailGUID);
@@ -125,11 +113,6 @@ namespace Drafthorse.Component.Detail
                 return;
             }
 
-            /*
-            Point3d target = new Point3d();
-            if (!DA.GetData("Target", ref target)) target = detail.Viewport.CameraTarget;
-            //else targetDefined = true;
-            */
             Box targetBox = Box.Unset;
             if (!DA.GetData("Target", ref targetBox)) targetBox = new Box(new BoundingBox(detail.Viewport.CameraTarget, detail.Viewport.CameraTarget));
             else targetDefined = true;
@@ -137,9 +120,7 @@ namespace Drafthorse.Component.Detail
             
             double scale = 1.0;
             if (!DA.GetData("Scale", ref scale)) scale = detail.DetailGeometry.PageToModelRatio;
-            //else scaleDefined = true;
-
-           
+                   
             int? pNum = null;
             if (!DA.GetData("Projection", ref pNum)) pNum = 0;
             
@@ -173,26 +154,20 @@ namespace Drafthorse.Component.Detail
             else
             {
                 if (!targetDefined) targetBBox = new BoundingBox(view.ToViewportInfo().TargetPoint, view.ToViewportInfo().TargetPoint);
-                //if (!scaleDefined) scale = view.ToViewportInfo().; //Don't know what to set here
             }
-            /*
-            */
+           
 
             if (Execute || run)
             {
-
-                //Rhino.Commands.Result detailResult = Layout.ReviseDetail(detail, target, scale, projection, displayMode, view.ToViewportInfo());
-                //view = new Make2DViewInfoGoo(new Rhino.DocObjects.ViewportInfo(detail.Viewport));
-                //Rhino.Commands.Result detailResult = Layout.ReviseDetail(detail, target, scale, projection, displayMode);
-                //Rhino.Commands.Result detailResult = Layout.ReviseDetail(detail, targetBox.Center, scale, projection, displayMode);
                 Rhino.Commands.Result detailResult = ReviseDetail(detail, targetBBox, scale, projection, displayMode, view.ToViewportInfo());
-                              
                 DA.SetData("Result", detailResult);
             }
+            
+            ModelDisplayMode newDisplayMode = new ModelDisplayMode(displayMode);
+
             DA.SetData("GUID", detailGUID);
-            DA.SetData("Display", detail.Viewport.DisplayMode.EnglishName);
+            DA.SetData("Display", newDisplayMode);
             DA.SetData("Target", detail.Viewport.CameraTarget); 
-            //double scaleOut = detail.Viewport.IsParallelProjection ? detail.DetailGeometry.PageToModelRatio : double.NaN; // alternative for Scale on non-parallel views
             DA.SetData("Scale", detail.DetailGeometry.PageToModelRatio);
             DA.SetData("Projection", detail.Viewport.Name); 
             DA.SetData("View", new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport)));
@@ -212,7 +187,7 @@ namespace Drafthorse.Component.Detail
             get { return new Guid("597ab500-8641-11ee-b9d1-0242ac120002"); }
         }
 
-        #region Add ToViewportInfo() Lists
+        #region Add Value Lists
         protected override void AppendAdditionalComponentMenuItems(System.Windows.Forms.ToolStripDropDown menu)
         {
             base.AppendAdditionalComponentMenuItems(menu);
