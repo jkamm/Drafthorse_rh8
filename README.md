@@ -13,11 +13,13 @@ v0.0.1-beta
 v0.0.3-beta
 - complete switch to PageLayouts as input/output types
 - Adds "Scale" input to BoundingBox Layout
+
+v1.0.0
+- updated all demo Examples
   
 WIP/Goals:
 
 - [x] Update Example files for most components to demonstrate basic workflows
-- [ ] Update Example file for MakePageActive Example (currently not working) 		
 - [ ] Check that DisplayMode inputs work in other languages
 - [ ] Bake to Layouts Component(to allow programmatic baking of geometry to paperspace with a layout as additional object attribute)
 - [x] Change all object references to DetailView and Layout/PageView params in RH8
