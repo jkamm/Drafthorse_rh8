@@ -40,8 +40,10 @@ namespace Drafthorse.Component.Detail
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit\nOverrides Target to set scale\nOverrides View", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Projection", "P[]", "View Projection \nAttach Value List for list of projections\nOverrides View", GH_ParamAccess.item);
-            var viewParam = new Param_ModelView();
-            viewParam.Hidden = true;
+            var viewParam = new Param_ModelView
+            {
+                Hidden = true
+            };
             pManager.AddParameter(viewParam, "View", "V", "Model View\nGood for Named and Perspective Views", GH_ParamAccess.item);
           
             Params.Input[0].Optional = true;
@@ -75,8 +77,10 @@ namespace Drafthorse.Component.Detail
             pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item);
             pManager.AddTextParameter("Projection", "P", "Viewport Projection", GH_ParamAccess.item);
-            var viewParam = new Param_ModelView();
-            viewParam.Hidden = true;
+            var viewParam = new Param_ModelView
+            {
+                Hidden = true
+            };
             pManager.AddParameter(viewParam, "View", "V", "Detail View", GH_ParamAccess.item);
         }
 

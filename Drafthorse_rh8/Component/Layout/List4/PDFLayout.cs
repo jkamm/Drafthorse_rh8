@@ -190,8 +190,9 @@ namespace Drafthorse.Component
                 {
                     double modelToPage = RhinoMath.UnitScale(rhDoc.PageUnitSystem, UnitSystem.Inches);
                     double relativeDPI = ((double)dpi*modelToPage);
-                    System.Drawing.Size size = Helper.Layout.SetSize(page, (int)relativeDPI);
-                    //Rhino.RhinoApp.WriteLine("Size is w{1}, h{0}, relativeDPI is {2}", size.Height, size.Width, relativeDPI);
+                    //System.Drawing.Size size = Helper.Layout.SetSize(page, (int)relativeDPI);
+                    System.Drawing.Size size = Helper.Layout.SetSize(page, dpi, modelToPage);
+                    Rhino.RhinoApp.WriteLine("Size is w{1}, h{0}, relativeDPI is {2}", size.Width, size.Height, relativeDPI);
                     settings = new ViewCaptureSettings(page, size, dpi);
                     settings.OutputColor = color;
                     pdf.AddPage(settings);

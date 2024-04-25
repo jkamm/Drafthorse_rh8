@@ -20,7 +20,7 @@ namespace Drafthorse.Helper
             RhinoDoc doc = RhinoDoc.ActiveDoc;
             ViewportInfo vpInfo = ParallelViewFromRec(detailRec);
 
-            var page_views = doc.Views.GetPageViews();
+            //var page_views = doc.Views.GetPageViews();
             //int page_number = (page_views == null) ? 1 : page_views.Length + 1;
 
             var pageview = doc.Views.AddPageView(name, width, height);
@@ -345,6 +345,37 @@ namespace Drafthorse.Helper
             if (detail.Viewport.IsParallelProjection && scale != 0) detail.DetailGeometry.SetScale(1, doc.ModelUnitSystem, scale, doc.PageUnitSystem);
 
             detail.CommitChanges();
+
+            page.SetPageAsActive();
+            doc.Views.ActiveView = page;
+            doc.Views.Redraw();
+            return Rhino.Commands.Result.Success;
+        }
+        public static Rhino.Commands.Result ReviseDetail(DetailViewObject detail, BoundingBox targetBox)
+        {
+            /* Replace Details
+            * - goal: add named views
+            * - goal: change to qualified success/failure with more info. 
+            */
+
+            //get all details 
+            RhinoDoc doc = RhinoDoc.ActiveDoc;
+            RhinoPageView[] page_views = RhinoDoc.ActiveDoc.Views.GetPageViews();
+            RhinoPageView page = Array.Find(page_views, (x) => x.MainViewport.Id.Equals(detail.Attributes.ViewportId));
+
+            page.SetActiveDetail(detail.Id);
+
+            //detail.Viewport.SetCameraTarget(targetBox.Center, true);
+            detail.CommitViewportChanges();
+            //page.SetActiveDetail(detail.Id);
+
+            bool result = false;
+            if (targetBox.Diagonal.Length > 0) result = detail.Viewport.ZoomBoundingBox(targetBox);
+            Rhino.RhinoApp.WriteLine("result of ZoomBBX was " + result.ToString());
+            //if (detail.Viewport.IsParallelProjection && scale != 0) detail.DetailGeometry.SetScale(1, doc.ModelUnitSystem, scale, doc.PageUnitSystem);
+            //detail.CommitViewportChanges();
+            detail.CommitChanges();
+                        
 
             page.SetPageAsActive();
             doc.Views.ActiveView = page;
@@ -686,6 +717,25 @@ namespace Drafthorse.Helper
                 height = page.PageWidth;
             }
             System.Drawing.Size size = new System.Drawing.Size(Convert.ToInt32(width * dpi), Convert.ToInt32(height * dpi));
+            return size;
+        }
+
+        /// <summary>
+        /// Sets the size of a Layout for Printing
+        /// </summary>
+        /// <param name="page"> Layout Page</param>
+        /// <param name="dpi">print dpi</param>
+        /// <returns></returns>
+        public static System.Drawing.Size SetSize(RhinoPageView page, int dpi, double modelToPage)
+        {
+            double width = page.PageWidth;
+            double height = page.PageHeight;
+            if (IsLayoutFlipped(page))
+            {
+                width = page.PageHeight;
+                height = page.PageWidth;
+            }
+            System.Drawing.Size size = new System.Drawing.Size(Convert.ToInt32(width * dpi*modelToPage), Convert.ToInt32(height * dpi *modelToPage));
             return size;
         }
 
