@@ -26,7 +26,7 @@ namespace Drafthorse.Component
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             var bToggleParam = new Params.Param_BooleanToggle();
-            pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
+            pManager.AddParameter(bToggleParam, "Run", "R", "run using an input", GH_ParamAccess.item);
             Params.Input[0].Optional = true;
             //pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts", GH_ParamAccess.item);
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();

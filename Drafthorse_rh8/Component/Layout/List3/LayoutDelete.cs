@@ -27,7 +27,7 @@ namespace Drafthorse.Component.Layout.List3
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             var bToggleParam = new Params.Param_BooleanToggle();
-            Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
+            Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "run using an input", GH_ParamAccess.item)].Optional = true;
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             in_page = pManager.AddParameter(pageParam, "Page", "P", "Layout Page(s) to delete", GH_ParamAccess.tree);
             //Params.Input[pManager.AddIntegerParameter("Layout Index", "Li[]", "Indices for Layouts to delete \nAdd ValueList to get Layouts", GH_ParamAccess.tree)].Optional = true;

@@ -38,7 +38,7 @@ namespace Drafthorse.Component
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             //need to add default behavior for no indices - print all
-            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Set to true to Print \nUse Toggle only (not Button)", GH_ParamAccess.item);
+            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "run using an input", GH_ParamAccess.item);
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             in_page = pManager.AddParameter(pageParam, "Pages", "P", "Layout Page(s) to print\nPages in the same branch print to the same file", GH_ParamAccess.list);
             pManager.AddParameter(new Param_FilePath(), "Folder", "F", "Target Folder to Save PDFs \nWill create if it does not exist", GH_ParamAccess.item);
@@ -51,6 +51,7 @@ namespace Drafthorse.Component
             in_draftingLine = pManager.AddParameter(draftingLine, "DraftingLineWidth", "D", "Set default print width for undefined lines\nOnly values used", GH_ParamAccess.item);
             //pManager.AddNumberParameter("DefaultWidth", "D", "Set default print width for undefined", GH_ParamAccess.item, 0.1);
             pManager.AddNumberParameter("WireScale", "W", "Scale width of curves in print", GH_ParamAccess.item, 1);
+            pManager.AddBooleanParameter("Raster/Vector","R/V", "Set to True to print in Raster Mode", GH_ParamAccess.item, false);
 
             pManager[0].Optional = true;
             pManager[4].Optional = true;
@@ -143,6 +144,9 @@ namespace Drafthorse.Component
             double wireScale = 1.0;
             if (!DA.GetData("WireScale", ref wireScale)) wireScale = 1.0;
 
+            bool isRasterMode = true;
+            if (!DA.GetData("Raster/Vector", ref isRasterMode)) isRasterMode = false;
+            RhinoApp.WriteLine("Raster is set to " + isRasterMode);
 
             //Main
             if (run || Execute)
@@ -199,6 +203,7 @@ namespace Drafthorse.Component
                     settings.UsePrintWidths = usePrintWidths;
                     settings.DefaultPrintWidthMillimeters = defaultPrintWidth;
                     settings.WireThicknessScale = wireScale;
+                    settings.RasterMode = isRasterMode;
                 }
 
                 //if filename does not end in .pdf, add it.

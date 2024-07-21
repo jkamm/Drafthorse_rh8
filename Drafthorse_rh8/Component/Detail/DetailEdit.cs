@@ -34,7 +34,7 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
+            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "run using an input", GH_ParamAccess.item);
             pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
@@ -151,7 +151,7 @@ namespace Drafthorse.Component.Detail
             string dName = dMode.DisplayName;
             if (dName == null) dName = detail.Viewport.DisplayMode.EnglishName;
 
-            DisplayModeDescription displayMode = DisplayModeDescription.GetDisplayModes().First(mode => mode.DisplayAttributes.EnglishName == dName);
+            DisplayModeDescription displayMode = DisplayModeDescription.GetDisplayModes().FirstOrDefault(mode => mode.DisplayAttributes.EnglishName == dName);
 
             ModelView view = new ModelView();
             if (!DA.GetData("View", ref view)) view = new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport));

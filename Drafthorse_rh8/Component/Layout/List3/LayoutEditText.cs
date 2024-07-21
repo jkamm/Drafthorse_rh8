@@ -26,7 +26,7 @@ namespace Drafthorse.Component.Layout.List3
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddBooleanParameter("Run", "R", "Run the Drafthorse", GH_ParamAccess.item, false);
+            pManager.AddBooleanParameter("Run", "R", "run using an input", GH_ParamAccess.item, false);
             //pManager.AddIntegerParameter("Index", "Li", "Indexed Layout to change", GH_ParamAccess.item);
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
             in_page = pManager.AddParameter(pageParam, "Layout Page", "P", "Input Layout Page", GH_ParamAccess.item);

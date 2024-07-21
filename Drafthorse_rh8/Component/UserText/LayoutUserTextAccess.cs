@@ -23,7 +23,7 @@ namespace Drafthorse.Component.UserText
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             var pageParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelPageViewport();
-            in_page = pManager.AddParameter(pageParam, "Page", "P", "Layout Page(s) to make active", GH_ParamAccess.item); 
+            in_page = pManager.AddParameter(pageParam, "Page", "P", "Layout Page(s) to modify", GH_ParamAccess.item); 
             //pManager.AddIntegerParameter("Index", "Li", "Indices for Layouts. \nGet using 'Get Layout Index'", GH_ParamAccess.item);
             pManager.AddTextParameter("Keys", "K", "Key(s) to return Value for.", GH_ParamAccess.item);
 

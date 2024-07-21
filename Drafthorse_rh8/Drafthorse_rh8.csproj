@@ -30,8 +30,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Grasshopper" Version="8.1.23325.13001" IncludeAssets="compile;build" />
-    <PackageReference Include="RhinoCommon" Version="8.1.23325.13001" />
+    <PackageReference Include="Grasshopper" Version="8.7.24138.15431" IncludeAssets="compile;build" />
+    <PackageReference Include="RhinoCommon" Version="8.7.24138.15431" />
   </ItemGroup>
   
   <ItemGroup>
@@ -50,6 +50,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Update="Drafthorse_rh8.gha">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\DrafthorseLogo64x64.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

@@ -28,7 +28,7 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
+            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "run using an input", GH_ParamAccess.item);
             pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
             pManager.AddBoxParameter("Bounding Box", "B", "Target Bounding Box for Detail", GH_ParamAccess.item);
                         

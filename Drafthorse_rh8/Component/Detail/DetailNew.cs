@@ -40,7 +40,7 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             var bToggle = new Params.Param_BooleanToggle();
-            Params.Input[pManager.AddParameter(bToggle, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
+            Params.Input[pManager.AddParameter(bToggle, "Run", "R", "run using an input", GH_ParamAccess.item)].Optional = true;
             pManager.AddParameter(new Param_ModelPageViewport(), "Layout Page", "P", "Layout Page to add detail", GH_ParamAccess.item);
             pManager.AddRectangleParameter("Bounds", "B", "Detail Boundary Rectangle on Layout Page", GH_ParamAccess.item);
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);

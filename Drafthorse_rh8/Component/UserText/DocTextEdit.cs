@@ -27,7 +27,7 @@ namespace Drafthorse.Component.UserText
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             var bToggleParam = new Params.Param_BooleanToggle();
-            Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item)].Optional = true;
+            Params.Input[pManager.AddParameter(bToggleParam, "Run", "R", "run using an input", GH_ParamAccess.item)].Optional = true;
             Params.Input[pManager.AddTextParameter("Keys", "K", "Keys for Doc Texts (unique)", GH_ParamAccess.list)].Optional = true;
             Params.Input[pManager.AddTextParameter("Values", "V", "Values for Doc Texts (must match Key count)", GH_ParamAccess.list)].Optional = true;
             /*
