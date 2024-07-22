@@ -34,7 +34,7 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "run using an input", GH_ParamAccess.item);
+            pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
             pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
@@ -124,7 +124,8 @@ namespace Drafthorse.Component.Detail
             
             double scale = 1.0;
             if (!DA.GetData("Scale", ref scale)) scale = detail.DetailGeometry.PageToModelRatio;
-                   
+            scale *= Rhino.RhinoMath.UnitScale(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem, Rhino.RhinoDoc.ActiveDoc.PageUnitSystem);
+
             int? pNum = null;
             if (!DA.GetData("Projection", ref pNum)) pNum = 0;
             

@@ -111,13 +111,13 @@ namespace Drafthorse.Component
             if (!DA.GetData("DPI", ref dpi)) dpi = 100;
             if (dpi > 1200)
             {
-                dpi = 1200;
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Max DPI = 1200");
+                //dpi = 1200;
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Suggested Max DPI = 1200");
             }
             else if (dpi < 72)
             {
-                dpi = 72;
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Min DPI = 72");
+                //dpi = 72;
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Suggested Min DPI = 72");
             }
 
             string result = "Failed";
@@ -199,11 +199,11 @@ namespace Drafthorse.Component
                     Rhino.RhinoApp.WriteLine("Size is w{1}, h{0}, relativeDPI is {2}", size.Width, size.Height, relativeDPI);
                     settings = new ViewCaptureSettings(page, size, dpi);
                     settings.OutputColor = color;
-                    pdf.AddPage(settings);
                     settings.UsePrintWidths = usePrintWidths;
                     settings.DefaultPrintWidthMillimeters = defaultPrintWidth;
                     settings.WireThicknessScale = wireScale;
                     settings.RasterMode = isRasterMode;
+                    pdf.AddPage(settings);
                 }
 
                 //if filename does not end in .pdf, add it.
