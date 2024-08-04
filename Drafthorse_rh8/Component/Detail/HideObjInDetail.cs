@@ -43,9 +43,9 @@ namespace Drafthorse_rh8.Component.Detail
             var viewParam = new Param_DetailView();
             pManager.AddParameter(viewParam, "Detail View", "D", "DetailView to modify", GH_ParamAccess.item);
             var modelObjectParam = new Param_ModelObject();
-            pManager.AddParameter(modelObjectParam, "Model Object", "O", "Model Objects to modify", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("State", "S", "Visibility state: Show = True, Hide = False", GH_ParamAccess.list);
-            pManager.AddTextParameter("Result", "R", "Object show/hide state after", GH_ParamAccess.list);
+            pManager.AddParameter(modelObjectParam, "Model Object", "O", "Model Objects to modify", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("State", "S", "Visibility state: Show = True, Hide = False", GH_ParamAccess.item);
+            pManager.AddTextParameter("Result", "R", "Object show/hide state after", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Drafthorse_rh8.Component.Detail
             DA.SetData("Detail View", detailView);
             DA.SetData("Model Object", newObject);
             DA.SetData("State", newState);
-            DA.SetData("Results", result);
+            DA.SetData("Result", result);
         }
 
         /// <summary>

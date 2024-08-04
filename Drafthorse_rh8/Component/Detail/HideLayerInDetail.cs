@@ -1,11 +1,14 @@
-﻿using Grasshopper.Kernel;
-using Rhino;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Rhino.DocObjects;
-using Grasshopper.Kernel.Types;
 
-namespace Drafthorse.Component.Detail
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Rhino.DocObjects;
+using Rhino;
+using Rhino.Geometry;
+using Grasshopper.Rhinoceros.Model;
+
+namespace Drafthorse_rh8.Component.Detail
 {
     public class HideLayerInDetail : GH_Component
     {
@@ -13,8 +16,8 @@ namespace Drafthorse.Component.Detail
         /// Initializes a new instance of the HideLayerInDetail class.
         /// </summary>
         public HideLayerInDetail()
-          : base("HideLayerInDetail", "HideLayerDetail",
-              "Hide the target layer in the target Detail (WIP)",
+          : base("HideLayerInDetail", "HideLayerInDet",
+              "Hide or Show a Layer in a Detail",
               "Drafthorse", "Detail")
         {
         }
@@ -25,14 +28,10 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             var viewParam = new Param_DetailView();
-            pManager.AddParameter(viewParam, "Detail View", "D", "DetailView to modify", GH_ParamAccess.item);
-            //pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
-            //pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(viewParam, "Detail", "D", "DetailView to modify", GH_ParamAccess.item);
             var layerParam = new Grasshopper.Rhinoceros.Model.Params.Param_ModelLayer();
-            pManager.AddParameter(layerParam, "Layers", "L", "Layers to set visibility in Detail", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("States", "S", "Visibility State: True = Visible, False = Hidden", GH_ParamAccess.list);
-
-            Params.Input[1].Optional = true;
+            pManager.AddParameter(layerParam, "Layer", "L", "Layer to set visibility in Detail", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("State", "S", "Visibility State: True = Visible, False = Hidden", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -41,11 +40,10 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             var viewParam = new Param_DetailView();
-            pManager.AddParameter(viewParam, "Detail View", "D", "DetailView that was modified", GH_ParamAccess.item);
-            //pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(viewParam, "Detail", "D", "DetailView that was modified", GH_ParamAccess.item);
             var layerParam = new Grasshopper.Rhinoceros.Model.Params.Param_ModelLayer();
-            pManager.AddParameter(layerParam, "Layers", "L", "Layers to set visibility in Detail", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("States", "S", "Visibility State: True = Visible, False = Hidden", GH_ParamAccess.list);
+            pManager.AddParameter(layerParam, "Layer", "L", "Layers to set visibility in Detail", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("State", "S", "Visibility State: True = Visible, False = Hidden", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace Drafthorse.Component.Detail
 
             GH_DetailView detailView = null;
             DA.GetData("Detail View", ref detailView);
-            detailGUID = detailView.ReferenceID; 
+            detailGUID = detailView.ReferenceID;
 
             DetailViewObject detail = RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as DetailViewObject;
             if (detail == null)
@@ -68,47 +66,40 @@ namespace Drafthorse.Component.Detail
                 return;
             }
 
-            List<Grasshopper.Rhinoceros.Model.ModelLayer> layerList = new List<Grasshopper.Rhinoceros.Model.ModelLayer>();
-            List<Grasshopper.Rhinoceros.Model.ModelLayer> newLayerList = new List<Grasshopper.Rhinoceros.Model.ModelLayer>();
-            DA.GetDataList("Layers", layerList);
+            ModelLayer thisLayer = new ModelLayer();
+            ModelLayer newLayer = new ModelLayer();
+            DA.GetData("Layer", ref thisLayer);
 
-            List<bool> stateList = new List<bool>();
-            List<bool> newStateList = new List<bool>();
+            bool thisState = new bool();
+            bool newState = new bool();
 
-            DA.GetDataList("States", stateList);
+            DA.GetData("State", ref thisState);
 
             RhinoDoc doc = RhinoDoc.ActiveDoc;
 
-            List<string> results = new List<string>();
+            string result = String.Empty;
 
-            for (int i = 0; i < layerList.Count; i++)
+
+            var ghLayer = thisLayer;
+            var state = thisState;
+
+            Guid? layerGuid = ghLayer.Id;
+
+            if (layerGuid.HasValue)
             {
-                var ghLayer = layerList[i];
-                var state = stateList[Math.Min(i, stateList.Count - 1)];
-                
-                Guid? layerGuid = ghLayer.Id;
-
-                if (layerGuid.HasValue)
-                {
-                    // Get the active Rhino document
-
-
-                    // Try to find the layer by name
-                    Layer rhLayer = doc.Layers.FindId(layerGuid.Value);
-                    rhLayer.SetPerViewportVisible(detailGUID, state);
-                    string result = state ? "visible" : "hidden";
-                    string message = "Success! Layer " + ghLayer.Path.ToString() + " set to " + result;
-                    results.Add(message);
-                    newStateList.Add(state);
-                    newLayerList.Add(ghLayer);
-                }
-                else results.Add("failure :(");
-
+                Layer rhLayer = doc.Layers.FindId(layerGuid.Value);
+                rhLayer.SetPerViewportVisible(detailGUID, state);
+                string thisResult = state ? "visible" : "hidden";
+                string message = "Success! Layer " + ghLayer.Path.ToString() + " set to " + thisResult;
+                result = message;
+                newState = state;
+                newLayer = ghLayer;
             }
-            DA.SetData("Detail View", detailView);
-            //DA.SetData("GUID", detailGUID);
-            DA.SetDataList("Layers", newLayerList);
-            DA.SetDataList("States", newStateList);            
+            else result = "failure :(";
+
+            DA.SetData("Detail", detailView);
+            DA.SetData("Layer", newLayer);
+            DA.SetData("State", newState);
         }
 
         /// <summary>
@@ -129,7 +120,7 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("4506CA3D-E2F9-446A-A488-F60968C8B57E"); }
+            get { return new Guid("E1FB329F-F3E2-4D08-BEF8-7928D5BCE4A7"); }
         }
     }
 }

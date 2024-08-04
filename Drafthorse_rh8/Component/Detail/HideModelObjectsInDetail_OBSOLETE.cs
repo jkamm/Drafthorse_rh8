@@ -9,17 +9,18 @@ using Grasshopper.Rhinoceros.Model;
 
 namespace Drafthorse_rh8.Component.Detail
 {
-    public class HideModelObjectsInDetail : GH_Component
+    public class HideModelObjectsInDetail_OBSOLETE : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the HideModelObjectsInDetail class.
         /// </summary>
-        public HideModelObjectsInDetail()
+        public HideModelObjectsInDetail_OBSOLETE()
           : base("Hide Model Objects In Detail", "HideObjsInDet",
               "Hide or Show an object in a detail",
               "Drafthorse", "Detail")
         {
         }
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         /// <summary>
         /// Registers all the input parameters for this component.
