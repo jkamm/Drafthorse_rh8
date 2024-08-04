@@ -2,7 +2,7 @@
 	
   <PropertyGroup>
     <TargetFrameworks>net7.0-windows;net48-windows</TargetFrameworks>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Title>Drafthorse_rh8</Title>
     <Description>Plugin for Grasshopper to make and manage Layouts in Rhinoceros 3d</Description>
     <TargetExt>.gha</TargetExt>

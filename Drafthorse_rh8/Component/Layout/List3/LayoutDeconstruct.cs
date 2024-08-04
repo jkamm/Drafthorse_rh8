@@ -45,8 +45,8 @@ namespace Drafthorse.Component.Layout.List3
             pManager.AddIntegerParameter("Page Number", "#", "Order of Page in Rhino", GH_ParamAccess.item);
             pManager.AddTextParameter("Page Name", "N", "Page name", GH_ParamAccess.item);
             //pManager.AddParameter(new Grasshopper.Rhinoceros.Display.Params.Param_ModelView(), "View", "V", " Detail View", GH_ParamAccess.item);
-            
-            pManager.AddGenericParameter("Details", "D", "Details that appear on the page", GH_ParamAccess.list);
+            Param_DetailView param_DetailView = new Param_DetailView();
+            pManager.AddParameter(param_DetailView, "Details", "D", "Details that appear on the page", GH_ParamAccess.list);
             pManager.AddNumberParameter("Width", "W", "Width of the Layout Page", GH_ParamAccess.item);
             pManager.AddNumberParameter("Height", "H", "Height of the Layout Page", GH_ParamAccess.item);
             pManager.AddTextParameter("Units", "U", "Paperspace Units", GH_ParamAccess.item);
