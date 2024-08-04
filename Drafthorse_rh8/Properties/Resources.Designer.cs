@@ -143,6 +143,16 @@ namespace Drafthorse_rh8.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DetailViewParam {
+            get {
+                object obj = ResourceManager.GetObject("DetailViewParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DH_ComponentSet {
             get {
                 object obj = ResourceManager.GetObject("DH_ComponentSet", resourceCulture);

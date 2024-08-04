@@ -160,21 +160,21 @@ namespace Drafthorse.Component.Detail
             {
                 if (!targetDefined) targetBBox = new BoundingBox(view.ToViewportInfo().TargetPoint, view.ToViewportInfo().TargetPoint);
             }
-           
+
 
             if (Execute || run)
             {
                 Rhino.Commands.Result detailResult = ReviseDetail(detail, targetBBox, scale, projection, displayMode, view.ToViewportInfo());
                 DA.SetData("Result", detailResult);
             }
-            
+
             ModelDisplayMode newDisplayMode = new ModelDisplayMode(displayMode);
 
             DA.SetData("GUID", detailGUID);
             DA.SetData("Display", newDisplayMode);
             DA.SetData("Target", detail.Viewport.CameraTarget); 
             DA.SetData("Scale", detail.DetailGeometry.PageToModelRatio);
-            DA.SetData("Projection", detail.Viewport.Name); 
+            DA.SetData("Projection", detail?.Viewport.Name); 
             DA.SetData("View", new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport)));
         }
 
