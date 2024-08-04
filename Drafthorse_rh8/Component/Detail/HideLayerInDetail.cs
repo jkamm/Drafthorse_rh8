@@ -69,9 +69,12 @@ namespace Drafthorse.Component.Detail
             }
 
             List<Grasshopper.Rhinoceros.Model.ModelLayer> layerList = new List<Grasshopper.Rhinoceros.Model.ModelLayer>();
+            List<Grasshopper.Rhinoceros.Model.ModelLayer> newLayerList = new List<Grasshopper.Rhinoceros.Model.ModelLayer>();
             DA.GetDataList("Layers", layerList);
 
             List<bool> stateList = new List<bool>();
+            List<bool> newStateList = new List<bool>();
+
             DA.GetDataList("States", stateList);
 
             RhinoDoc doc = RhinoDoc.ActiveDoc;
@@ -82,6 +85,7 @@ namespace Drafthorse.Component.Detail
             {
                 var ghLayer = layerList[i];
                 var state = stateList[Math.Min(i, stateList.Count - 1)];
+                
                 Guid? layerGuid = ghLayer.Id;
 
                 if (layerGuid.HasValue)
@@ -95,14 +99,16 @@ namespace Drafthorse.Component.Detail
                     string result = state ? "visible" : "hidden";
                     string message = "Success! Layer " + ghLayer.Path.ToString() + " set to " + result;
                     results.Add(message);
+                    newStateList.Add(state);
+                    newLayerList.Add(ghLayer);
                 }
                 else results.Add("failure :(");
 
             }
             DA.SetData("Detail View", detailView);
             //DA.SetData("GUID", detailGUID);
-            DA.SetDataList("Layers", layerList);
-            DA.SetDataList("States", stateList);            
+            DA.SetDataList("Layers", newLayerList);
+            DA.SetDataList("States", newStateList);            
         }
 
         /// <summary>
