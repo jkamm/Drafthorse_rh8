@@ -18,7 +18,7 @@ namespace Drafthorse.Component.Detail
               "Drafthorse", "Detail")
         {
         }
-        private GH_Exposure Exposure = GH_Exposure.hidden;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         /// <summary>
         /// Registers all the input parameters for this component.

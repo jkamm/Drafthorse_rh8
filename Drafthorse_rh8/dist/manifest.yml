@@ -1,6 +1,6 @@
 ---
 name: DraftHorse
-version: 1.0.3
+version: 1.1.0-beta
 authors:
 - Jo Kamm
 description: >
@@ -12,3 +12,5 @@ keywords:
   - drafting
   - paperspace
   - guid:6b12ef31-6141-460f-a658-0f8da4ac5a22
+changelog:
+  - 1.1.0_beta - testing visibility in detail components

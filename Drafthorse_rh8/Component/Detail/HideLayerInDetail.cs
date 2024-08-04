@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino.DocObjects;
 using Rhino;
-using Rhino.Geometry;
 using Grasshopper.Rhinoceros.Model;
 
 namespace Drafthorse_rh8.Component.Detail
@@ -56,7 +53,7 @@ namespace Drafthorse_rh8.Component.Detail
             //DA.GetData("GUID", ref detailGUID);
 
             GH_DetailView detailView = null;
-            DA.GetData("Detail View", ref detailView);
+            DA.GetData("Detail", ref detailView);
             detailGUID = detailView.ReferenceID;
 
             DetailViewObject detail = RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as DetailViewObject;
