@@ -1,6 +1,7 @@
 ﻿using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 using Grasshopper.Rhinoceros.Display;
 using Grasshopper.Rhinoceros.Display.Params;
 using Rhino.Display;
@@ -35,7 +36,8 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddParameter(new Params.Param_BooleanToggle(), "Run", "R", "Do not use button to activate - toggle only", GH_ParamAccess.item);
-            pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            //pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_DetailView(), "Detail", "Dt", "Detail Object", GH_ParamAccess.item);
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D[]", "Model Display Mode\nAttach Value List for list of Display Modes", GH_ParamAccess.item);
             pManager.AddBoxParameter("Target", "T", "Target for Detail\nPoint is acceptable input for Parallel Views\nOverrides View", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit\nOverrides Target to set scale\nOverrides View", GH_ParamAccess.item);
@@ -72,7 +74,8 @@ namespace Drafthorse.Component.Detail
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("Result", "R", "Success or Failure for each detail", GH_ParamAccess.item);
-            pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            //pManager.AddParameter(new Param_Guid(), "GUID", "G", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_DetailView(), "Detail", "Dt", "Detail Object", GH_ParamAccess.item);
             pManager.AddParameter(new Param_ModelDisplayMode(), "Display", "D", "Model Display Mode", GH_ParamAccess.item);
             pManager.AddPointParameter("Target", "T", "Camera Target for Detail", GH_ParamAccess.item);
             pManager.AddNumberParameter("Scale", "S", "Page Units per Model Unit", GH_ParamAccess.item);
@@ -106,10 +109,13 @@ namespace Drafthorse.Component.Detail
 
             //used for qualified override
             bool targetDefined = false;
-   
+
 
             Guid detailGUID = Guid.Empty;
-            DA.GetData("GUID", ref detailGUID);
+            GH_DetailView gH_DetailView = null;
+            DA.GetData("Detail", ref gH_DetailView);
+            detailGUID = gH_DetailView.ReferenceID;
+
             Rhino.DocObjects.DetailViewObject detail = Rhino.RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
             if (detail == null)
             {
@@ -170,7 +176,8 @@ namespace Drafthorse.Component.Detail
 
             ModelDisplayMode newDisplayMode = new ModelDisplayMode(displayMode);
 
-            DA.SetData("GUID", detailGUID);
+            //DA.SetData("GUID", detailGUID);
+            DA.SetData("Detail", gH_DetailView);
             DA.SetData("Display", newDisplayMode);
             DA.SetData("Target", detail.Viewport.CameraTarget); 
             DA.SetData("Scale", detail.DetailGeometry.PageToModelRatio);
