@@ -1,4 +1,6 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Grasshopper.Rhinoceros.Display;
 using Rhino.Geometry;
 using System;
 
@@ -22,8 +24,9 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            var guidParam = new Grasshopper.Kernel.Parameters.Param_Guid();
-            pManager.AddParameter(guidParam, "Detail GUID", "D", "GUID for Detail Object", GH_ParamAccess.item);
+            //var guidParam = new Grasshopper.Kernel.Parameters.Param_Guid();
+            //pManager.AddParameter(guidParam, "Detail GUID", "D", "GUID for Detail Object", GH_ParamAccess.item);
+            pManager.AddParameter(new Param_DetailView(), "Detail", "D", "Detail Object", GH_ParamAccess.item);
 
         }
 
@@ -32,12 +35,13 @@ namespace Drafthorse.Component.Detail
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGeometryParameter("Geometry", "G", "Underlying Geometry for Detail View", GH_ParamAccess.item);
+            //pManager.AddGeometryParameter("Geometry", "G", "Underlying Geometry for Detail View", GH_ParamAccess.item);
             //pManager.AddTextParameter("View", "V", "Name of Viewport", GH_ParamAccess.item);
+            //pManager.AddParameter(new Param_DetailView(), "Detail", "D", "Detail Object", GH_ParamAccess.item);
             var viewParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelView();
             viewParam.Hidden = true;
             pManager.AddParameter(viewParam, "View", "V", "Detail View", GH_ParamAccess.item);
-            
+            //pManager.AddTextParameter("ViewName", "Vn", "Detail View Name", GH_ParamAccess.item);
             var displayParam = new Grasshopper.Rhinoceros.Display.Params.Param_ModelDisplayMode();
             pManager.AddParameter(displayParam, "Display", "D", "Model Display Mode", GH_ParamAccess.item);
             //pManager.AddTextParameter("Display", "D", "Display Mode", GH_ParamAccess.item);
@@ -46,8 +50,9 @@ namespace Drafthorse.Component.Detail
             pManager.AddNumberParameter("Scale", "S", "Page units/model units quotient.", GH_ParamAccess.item);
             pManager.AddRectangleParameter("Bounds", "B", "Boundary of detail viewport in Rhino Space", GH_ParamAccess.item);
             pManager.AddPointParameter("Target", "T", "Viewport Camera Target", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Attributes", "A", "Detail Attributes", GH_ParamAccess.item);
-            pManager.AddTextParameter("Name", "N", "Detail Name", GH_ParamAccess.item);
+            //pManager.AddGenericParameter("Attributes", "A", "Detail Attributes", GH_ParamAccess.item);
+            //pManager.AddTextParameter("Name", "N", "Detail Name", GH_ParamAccess.item);
+           
         }
 
         /// <summary>
@@ -57,16 +62,20 @@ namespace Drafthorse.Component.Detail
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             Guid detailGUID = Guid.Empty;
-            DA.GetData("Detail GUID", ref detailGUID);
-            Rhino.DocObjects.DetailViewObject detail = Rhino.RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
+            //DA.GetData("Detail GUID", ref detailGUID);
 
+            GH_DetailView gH_DetailView = null;
+            DA.GetData("Detail", ref gH_DetailView);
+            detailGUID = gH_DetailView.ReferenceID;
+
+            Rhino.DocObjects.DetailViewObject detail = Rhino.RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
             if (detail == null) return;
 
-            Curve detailGeo = detail.Geometry as Curve;
+            //Curve detailGeo = detail.Geometry as Curve;
 
             Rhino.Display.RhinoViewport viewport = detail.Viewport;
-            //string viewName = viewport.Name;
-            var view = Grasshopper.Rhinoceros.Display.ModelView.Cast(viewport);
+            string viewName = viewport.Name;
+            ModelView view = new ModelView(viewport);
 
             System.Drawing.Rectangle bounds = viewport.Bounds;
             Rectangle3d rhinoBounds = new Rectangle3d(Plane.WorldXY, new Point3d(bounds.Left, bounds.Bottom, 0),
@@ -76,6 +85,7 @@ namespace Drafthorse.Component.Detail
             //Rhino.Display.DisplayModeDescription viewDisplay = viewport.DisplayMode;
 
             Rhino.DocObjects.ObjectAttributes att = detail.Attributes;
+
             //Guid viewportId = att.ViewportId;
             //var parentView = viewport.ParentView;
 
@@ -89,20 +99,21 @@ namespace Drafthorse.Component.Detail
             DetailView detailView = detail.DetailGeometry;
             double scale = detailView.PageToModelRatio;
             var displayMode = new Grasshopper.Rhinoceros.Display.ModelDisplayMode(viewport.DisplayMode);
-            //detailView.
+            //string viewName = detail.Name;
+            //detailView.            
 
-
-            DA.SetData("Geometry", detailGeo);
+            //DA.SetData("Geometry", detailGeo);
+            //DA.SetData("Detail", gH_DetailView ?? null);
             DA.SetData("View", view);
+            //DA.SetData("ViewName", viewName);
             DA.SetData("Display", displayMode);
             DA.SetData("ToWorld", pageToWorld);
             DA.SetData("ToPage", worldToPage);
             DA.SetData("Scale", scale);
             DA.SetData("Bounds", rhinoBounds);
             DA.SetData("Target", targetPt);
-            DA.SetData("Attributes", att);
-            DA.SetData("Name", att.Name);
-
+            //DA.SetData("Attributes", att);
+            //DA.SetData("Name", detail.Name);
         }
 
         /// <summary>

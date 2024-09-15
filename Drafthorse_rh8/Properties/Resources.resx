@@ -142,6 +142,9 @@
   <data name="DeleteLayout" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>DeleteLayout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="DetailViewParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DetailViewParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DH_ComponentSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>DH_ComponentSet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
