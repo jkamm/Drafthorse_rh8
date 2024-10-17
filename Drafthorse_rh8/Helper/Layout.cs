@@ -690,10 +690,10 @@ namespace Drafthorse.Helper
                 // CommitViewPortChanges modifies the Viewport only
                 detail.CommitViewportChanges();
 
-                pageview.SetActiveDetail(detail.Id);
+                //pageview.SetActiveDetail(detail.Id);
                 detail.Name = detTitle;
                 detail.DetailGeometry.IsProjectionLocked = false;
-                detail.DetailGeometry.SetScale(1, doc.ModelUnitSystem, scale, doc.PageUnitSystem);
+                if (detail.Viewport.IsParallelProjection && scale != 0) detail.DetailGeometry.SetScale(1, doc.ModelUnitSystem, scale, doc.PageUnitSystem);
                 // Commit changes tells the document to replace the document's detail object
                 // with the modified one that we just adjusted
                 detail.CommitChanges();
