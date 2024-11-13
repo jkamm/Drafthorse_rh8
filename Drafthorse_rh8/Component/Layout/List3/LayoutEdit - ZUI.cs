@@ -1,11 +1,11 @@
-﻿/*
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using System.Linq;
 using static Drafthorse.Helper.Layout;
-using IOComponents;
+//using IOComponents;
+using Drafthorse.Component.Base;
 
 namespace Drafthorse.Component.Layout.List3
 {
@@ -127,11 +127,11 @@ namespace Drafthorse.Component.Layout.List3
         /// Initializes a new instance of the LayoutEdit_ZUI class.
         /// </summary>
         public LayoutEdit_ZUI()
-          : base("Edit Layout", "LayoutEdit", "Modify Layout Attributes", "Drafthorse", "Layout")
+          : base("Edit Layout 2", "LayoutEdit", "Modify Layout Attributes", "Drafthorse", "Layout")
         {
             
         }
-
+        
         public override void VariableParameterMaintenance()
         {
             base.VariableParameterMaintenance();
@@ -283,4 +283,4 @@ namespace Drafthorse.Component.Layout.List3
         }
     }
 }
- */
+ 

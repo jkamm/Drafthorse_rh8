@@ -31,6 +31,7 @@
   
   <ItemGroup>
     <PackageReference Include="Grasshopper" Version="8.10.24228.13001" IncludeAssets="compile;build" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="RhinoCommon" Version="8.10.24228.13001" />
   </ItemGroup>
   

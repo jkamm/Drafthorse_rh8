@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -10,7 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Drafthorse.Helper.Layout;
-using IOComponents;
+//using IOComponents;
+using Drafthorse.Component.Base;
 using Rhino;
 
 namespace Drafthorse.Component.Detail
@@ -133,7 +134,7 @@ namespace Drafthorse.Component.Detail
         /// Initializes a new instance of the DetailEdit_ZUI class.
         /// </summary>
         public DetailEdit_ZUI()
-          : base("Edit Details", "DetailEdit",
+          : base("Edit Details 2", "DetailEdit",
               "Modify detail views in a layout",
               "Drafthorse", "Detail")
         {
@@ -437,4 +438,3 @@ namespace Drafthorse.Component.Detail
         }
     }
 }
- */
