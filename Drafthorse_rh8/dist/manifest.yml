@@ -1,6 +1,6 @@
 ---
 name: DraftHorse
-version: 1.1.21
+version: 1.1.3-beta
 authors:
 - Jo Kamm
 description: >
@@ -17,3 +17,4 @@ changelog:
   - 1.1.1-beta - added Param_DetailView to inputs and outputs, improved DecDetail
   - 1.1.2 fixed Layout Page Param is sealed bug (removed from DraftHorse)
   - 1.1.21 fixed bug in New Layout component (https://discourse.mcneel.com/t/drafthorse-wont-scale-correctly-probably-my-fault/193136)
+  - 1.1.3 - added ZUI components (hidden). fixed Deconstruct Layout component - pageNun -1 is index num in pageview table

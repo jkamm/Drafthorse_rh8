@@ -2,6 +2,7 @@
 using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 using Grasshopper.Rhinoceros.Display;
 using Grasshopper.Rhinoceros.Display.Params;
 using Rhino.Display;
@@ -10,9 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Drafthorse.Helper.Layout;
-//using IOComponents;
 using Drafthorse.Component.Base;
 using Rhino;
+//using System.Xml.Schema;
 
 namespace Drafthorse.Component.Detail
 {
@@ -24,17 +25,18 @@ namespace Drafthorse.Component.Detail
             {
                 Name = "Run",
                 NickName = "R",
-                Description = "Do not use button to activate - toggle only",
+                Description = "Hide to show 'Modify' Button",
                 Optional = true,
             }, ParamRelevance.Secondary),
-            new ParamDefinition(new Param_Guid
+            new ParamDefinition (new Param_DetailView
             {
-                Name = "GUID",
-                NickName = "G",
-                Description = "GUID for Detail Object",
-                Optional = false,
+                Name = "Detail",
+                NickName = "Dt",
+                Description = "Detail Object",
+                //Optional = false,
+                Access = GH_ParamAccess.item
             }, ParamRelevance.Binding),
-            new ParamDefinition (new Param_ModelDisplayMode
+             new ParamDefinition (new Param_ModelDisplayMode
             {
                 Name = "Display",
                 NickName = "D[]",
@@ -70,6 +72,7 @@ namespace Drafthorse.Component.Detail
                 Optional = true,
                 Hidden = true,
             }, ParamRelevance.Primary),
+            
         };
 
         private static readonly ParamDefinition[] outputs = new ParamDefinition[7]
@@ -80,14 +83,22 @@ namespace Drafthorse.Component.Detail
                 NickName = "R",
                 Description = "Success or Failure for each detail",
                 Optional = true,
-            }, ParamRelevance.Primary),
-            new ParamDefinition(new Param_Guid
+            }, ParamRelevance.Secondary),
+            //new ParamDefinition(new Param_Guid
+            //{
+            //    //This should probably change to the GH Detail type (?)
+            //    Name = "GUID",
+            //    NickName = "G",
+            //    Description = "GUID for Detail Object",
+            //    Optional = false,
+            //}, ParamRelevance.Binding),
+            new ParamDefinition (new Param_DetailView
             {
-                //This should probably change to the GH Detail type (?)
-                Name = "GUID",
-                NickName = "G",
-                Description = "GUID for Detail Object",
+                Name = "Detail",
+                NickName = "Dt",
+                Description = "Detail Object",
                 Optional = false,
+                Access = GH_ParamAccess.item
             }, ParamRelevance.Binding),
             new ParamDefinition (new Param_ModelDisplayMode
             {
@@ -125,6 +136,7 @@ namespace Drafthorse.Component.Detail
                 Optional = true,
                 Hidden = true,
             }, ParamRelevance.Primary),
+            
         };
     
 
@@ -157,7 +169,7 @@ namespace Drafthorse.Component.Detail
                 param_Integer.AddNamedValue("Two-Point Perspective", 8);
             };
         }
-        public override GH_Exposure Exposure => GH_Exposure.hidden;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
                 
         /// <summary>
         /// This is the method that actually does the work.
@@ -176,16 +188,18 @@ namespace Drafthorse.Component.Detail
             #endregion EscapeBehavior
 
             int num = 0;
+
             bool run = false;
-            if (!TryGetData<bool>(DA, inputs[num++].Param.Name, out var value0)) run = false;
+            if (!TryGetData<bool>(DA, inputs[num++].Param.Name, out bool? value0)) run = false;
             if (value0.HasValue) run = value0.Value;
 
             //used for qualified override
             bool targetDefined = false;
 
-            if (!TryGetData<Guid>(DA, inputs[num++].Param.Name, out var value1)) return;
             Guid detailGUID = Guid.Empty;
-            if (!value1.HasValue) detailGUID = value1.Value;
+            if (!TryGetData<GH_DetailView>(DA, inputs[num++].Param.Name, out GH_DetailView value1)) return;
+
+            if (value1.IsValid) detailGUID = value1.ReferenceID;
             
             Rhino.DocObjects.DetailViewObject detail = RhinoDoc.ActiveDoc.Objects.FindId(detailGUID) as Rhino.DocObjects.DetailViewObject; ;
             if (detail == null)
@@ -194,60 +208,51 @@ namespace Drafthorse.Component.Detail
                 return;
             }
 
+            ModelDisplayMode dMode = new ModelDisplayMode();
+            string dName = dMode.DisplayName;
+            TryGetData<ModelDisplayMode>(DA, inputs[num++].Param.Name, out var value2);
+            if (!(value2 == null)) dName = value2.DisplayName;
+            else dName = detail.Viewport.DisplayMode.EnglishName;
+
+            DisplayModeDescription displayMode = DisplayModeDescription.GetDisplayModes().FirstOrDefault(mode => mode.DisplayAttributes.EnglishName == dName);
+
+
             Box targetBox = Box.Unset;
-            TryGetData<Box>(DA, inputs[num++].Param.Name, out var value2);
-            if (value2.HasValue) 
+            TryGetData<Box>(DA, inputs[num++].Param.Name, out Box? value3);
+            if (value3.HasValue) 
             {
-                targetBox = value2.Value;
+                targetBox = value3.Value;
                 targetDefined = true;
             }
             else targetBox = new Box(new BoundingBox(detail.Viewport.CameraTarget, detail.Viewport.CameraTarget));
             BoundingBox targetBBox = targetBox.BoundingBox;
             
             double scale = 1.0;
-            TryGetData<double>(DA, inputs[num++].Param.Name, out var value3);
-            if (value3.HasValue) scale = value3.Value;
+            TryGetData<double>(DA, inputs[num++].Param.Name, out double? value4);
+            value4 = value4?? 1.0;
+            if (value3.HasValue) scale = value4.Value;
             else scale = detail.DetailGeometry.PageToModelRatio;
-                   
-            int? pNum = null;
-            TryGetData<int>(DA, inputs[num++].Param.Name, out var value4);
-            if (value4.HasValue) pNum = value4.Value;
+            scale *= Rhino.RhinoMath.UnitScale(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem, Rhino.RhinoDoc.ActiveDoc.PageUnitSystem);
+
+            int pNum;
+            TryGetData<int>(DA, inputs[num++].Param.Name, out int? value5);
+            if (value5.HasValue) pNum = value5.Value;
             else pNum = 0;
             
             //Check that Projection is valid
             if (!Enum.IsDefined(typeof(DefinedViewportProjection), pNum))
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, pNum + " is not a valid Projection number. Projection will not be modified");
             DefinedViewportProjection projection = (DefinedViewportProjection)pNum;
+                       
             
-            
-            //string dName = string.Empty;
-            //if (!DA.GetData("Display", ref dName)) dName = detail.Viewport.DisplayMode.EnglishName;
-
-            //convert LocalName to EnglishName
-            //if (ValList.GetDisplaySettingsList(true).Contains(dName))
-            //    dName = ValList.GetDisplaySettingsList(false)[ValList.GetDisplaySettingsList(true).IndexOf(dName)];
-            
-            //if (!ValList.GetDisplaySettingsList(false).Contains(dName))
-                //AddRuntimeMessage(GH_RuntimeMessageLevel.Error, dName + " is not a valid Display Mode name");
-             
-
-            ModelDisplayMode dMode = new ModelDisplayMode();
-            string dName = dMode.DisplayName;
-            TryGetData<ModelDisplayMode>(DA, inputs[num++].Param.Name, out var value5);
-            if (value5.IsValid) dName = value5.DisplayName;
-            else dName = detail.Viewport.DisplayMode.EnglishName;
-            
-            DisplayModeDescription displayMode = DisplayModeDescription.FindByName(dName);
-
             ModelView view = new ModelView();
             TryGetData<ModelView>(DA, inputs[num++].Param.Name, out var value6);
-            if (value6.IsValid)
+            if (value6 != null)
             {
                 view = value6;
                 if (!targetDefined) targetBBox = new BoundingBox(view.ToViewportInfo().TargetPoint, view.ToViewportInfo().TargetPoint);
             }
             else view = new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport));
-            
 
             bool pressed = (base.Attributes as CustomAttributes).Pressed;
 
@@ -261,17 +266,17 @@ namespace Drafthorse.Component.Detail
 
             int num2 = 0;
             TrySetData(DA, outputs[num2++].Param.Name, () => detailResult);
-            //DA.SetData("GUID", detailGUID);
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => detailGUID);
-            //DA.SetData("Display", newDisplayMode);
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => newDisplayMode);
-            //DA.SetData("Target", detail.Viewport.CameraTarget);
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => detail.Viewport.CameraTarget);
-            //DA.SetData("Scale", detail.DetailGeometry.PageToModelRatio);
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => detail.DetailGeometry.PageToModelRatio);
-            //DA.SetData("Projection", detail.Viewport.Name);
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => detail.Viewport.Name);
-            //DA.SetData("View", new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport)));
+            
             TrySetData(DA, outputs[num2++].Param.Name, () => new ModelView(new Rhino.DocObjects.ViewportInfo(detail.Viewport)));
         }
 

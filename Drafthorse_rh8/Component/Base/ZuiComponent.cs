@@ -9,7 +9,7 @@ using Grasshopper.Kernel.Attributes;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
-using Grasshopper.My.Resources;
+//using Grasshopper.My.Resources;
 using Rhino.Geometry;
 using System;
 using System.Collections;
