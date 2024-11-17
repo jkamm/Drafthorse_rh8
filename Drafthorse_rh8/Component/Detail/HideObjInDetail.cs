@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -7,7 +7,7 @@ using Grasshopper.Rhinoceros.Model;
 using Grasshopper.Rhinoceros.Model.Params;
 using Rhino.DocObjects;
 using Rhino;
-using Rhino.Geometry;
+//using Rhino.Geometry;
 
 namespace Drafthorse_rh8.Component.Detail
 {

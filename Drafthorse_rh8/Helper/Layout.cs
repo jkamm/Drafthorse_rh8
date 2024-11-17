@@ -430,7 +430,7 @@ namespace Drafthorse.Helper
             //goal: if not found, Throw exception
             try
             {
-                return pageViews[index];
+                return pageViews[index-1];
             }
             catch (IndexOutOfRangeException)
             {

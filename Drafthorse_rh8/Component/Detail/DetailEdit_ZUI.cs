@@ -103,7 +103,7 @@ namespace Drafthorse.Component.Detail
             new ParamDefinition (new Param_ModelDisplayMode
             {
                 Name = "Display",
-                NickName = "D[]",
+                NickName = "D",
                 Description = "Model Display Mode",
                 Optional = true,
             }, ParamRelevance.Primary),
@@ -124,7 +124,7 @@ namespace Drafthorse.Component.Detail
             new ParamDefinition(new Param_Integer
             {
                 Name = "Projection",
-                NickName = "P[]",
+                NickName = "P",
                 Description = "View Projection",
                 Optional = true,
             }, ParamRelevance.Primary),

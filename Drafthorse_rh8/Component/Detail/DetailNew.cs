@@ -116,7 +116,7 @@ namespace Drafthorse.Component.Detail
             //DA.GetData("Index", ref index);
             if (page.PageNumber == null) return;
 
-            RhinoPageView pageView = GetPage((int)page.PageNumber - 1);
+            RhinoPageView pageView = GetPage((int)page.PageNumber);
 
             Rectangle3d dBounds = new Rectangle3d();
             DA.GetData("Bounds", ref dBounds);
