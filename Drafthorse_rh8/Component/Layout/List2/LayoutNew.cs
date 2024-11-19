@@ -106,9 +106,10 @@ namespace Drafthorse.Component.Layout.List2
             
             double scale = 1;
             DA.GetData("Scale", ref scale);
+            if (scale <= 0) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Scale Error: Scale cannot be less than or equal to 0");
             //do some exception handling on scale?
-            scale = Math.Min(scale, 1000);
-            scale = Math.Max(scale, 0.001);
+            //scale = Math.Min(scale, 1000);
+            //scale = Math.Max(scale, 0.001);
 
             //Rhino.Commands.Result result = new Rhino.Commands.Result();
             Tuple<bool, string> layoutResult = new Tuple<bool, string>(false, string.Empty);

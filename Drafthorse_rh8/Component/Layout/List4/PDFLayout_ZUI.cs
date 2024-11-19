@@ -107,7 +107,8 @@ namespace Layout
         {
         }
 
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        //public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
         /// <summary>
         /// This is the method that actually does the work.
         /// </summary>
