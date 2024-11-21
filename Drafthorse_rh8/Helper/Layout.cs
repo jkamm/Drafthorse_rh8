@@ -336,7 +336,7 @@ namespace Drafthorse.Helper
 
             detail.Viewport.SetCameraTarget(targetBox.Center, true);
 
-            detail.Viewport.DisplayMode = displayMode;
+            if (displayMode != null) detail.Viewport.DisplayMode = displayMode;
             detail.CommitViewportChanges();
 
             bool result = false;
