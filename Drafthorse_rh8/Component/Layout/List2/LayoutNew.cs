@@ -1,9 +1,9 @@
-﻿using Drafthorse.Helper;
+﻿//using Drafthorse.Helper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using System;
-using static Drafthorse.Helper.ValList;
+//using static Drafthorse.Helper.ValList;
 
 namespace Drafthorse.Component.Layout.List2
 {
