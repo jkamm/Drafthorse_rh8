@@ -203,8 +203,7 @@ namespace Drafthorse.Component.Detail
             ModelDisplayMode dMode = new ModelDisplayMode();
             TryGetData<ModelDisplayMode>(DA, inputs[num++].Param.Name, out var value2);
             if (!(value2 == null)) dMode = value2.DisplayName;
-            string dName = dMode.DisplayName;
-            if (dName == null) dName = DisplayModeDescription.FindByName("Wireframe").EnglishName;
+            string dName = dMode.DisplayName ?? DisplayModeDescription.FindByName("Wireframe").EnglishName;
             DisplayModeDescription displayMode = DisplayModeDescription.FindByName(dName);
 
 

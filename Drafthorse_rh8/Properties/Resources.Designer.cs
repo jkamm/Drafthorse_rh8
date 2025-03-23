@@ -413,6 +413,26 @@ namespace Drafthorse_rh8.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PaperSettings {
+            get {
+                object obj = ResourceManager.GetObject("PaperSettings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PaperSettingsParam {
+            get {
+                object obj = ResourceManager.GetObject("PaperSettingsParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SetDocText {
             get {
                 object obj = ResourceManager.GetObject("SetDocText", resourceCulture);

@@ -134,9 +134,9 @@ namespace Drafthorse.Component.Layout
             TryGetData(DA, inputs[i++].Param.Name, out pageName);
 
             // Get paper size selection and orientation
-            int paperSizeIndex = -1;
-            TryGetData(DA, inputs[i++].Param.Name, out int? paperSizeValue);
-            if(!(paperSizeValue == null)) paperSizeIndex = paperSizeValue.Value;
+            int PaperSizeIndex = -1;
+            TryGetData(DA, inputs[i++].Param.Name, out int? PaperSizeValue);
+            if(!(PaperSizeValue == null)) PaperSizeIndex = PaperSizeValue.Value;
 
             bool landscape = false;
             TryGetData(DA, inputs[i++].Param.Name, out bool? landscapeValue);
@@ -158,7 +158,7 @@ namespace Drafthorse.Component.Layout
             if (heightValue.HasValue) height = heightValue.Value;
 
             // Get paper size list
-            List<PaperSize> paperSizes = isMetric
+            List<PaperSize> PaperSizes = isMetric
                 ? PaperSizeLibrary.GetMetricPaperSizes()
                 : PaperSizeLibrary.GetImperialPaperSizes();
 
@@ -182,9 +182,9 @@ namespace Drafthorse.Component.Layout
 
             // Apply paper size if selected and no direct inputs
             int units = 0; // Default to inches
-            if (paperSizeIndex >= 0 && paperSizeIndex < paperSizes.Count && !hasDirectInputs)
+            if (PaperSizeIndex >= 0 && PaperSizeIndex < PaperSizes.Count && !hasDirectInputs)
             {
-                PaperSize selectedSize = paperSizes[paperSizeIndex];
+                PaperSize selectedSize = PaperSizes[PaperSizeIndex];
 
                 // Apply dimensions based on orientation
                 if (landscape)
@@ -263,7 +263,7 @@ namespace Drafthorse.Component.Layout
             }
 
             // Add information messages
-            if (hasDirectInputs && paperSizeIndex >= 0)
+            if (hasDirectInputs && PaperSizeIndex >= 0)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
                     "Paper size preset is being overridden by direct width/height inputs.");
@@ -284,9 +284,8 @@ namespace Drafthorse.Component.Layout
                 try
                 {
                     Tuple<bool, string> layoutResult;
-                    Rhino.Display.RhinoPageView newLayout = null;
 
-                    layoutResult = Helper.Layout.AddNewLayout(pageName, width, height, target, detailCount, scale, out newLayout);
+                    layoutResult = Helper.Layout.AddNewLayout(pageName, width, height, target, detailCount, scale, out Rhino.Display.RhinoPageView newLayout);
 
                     if (!layoutResult.Item1)
                     {
@@ -338,14 +337,14 @@ namespace Drafthorse.Component.Layout
                 string unitName = unitSystem.ToString().ToLowerInvariant();
                 bool isMetric = unitName.EndsWith("meters");
 
-                List<PaperSize> paperSizes = isMetric ?
+                List<PaperSize> PaperSizes = isMetric ?
                     PaperSizeLibrary.GetMetricPaperSizes() :
                     PaperSizeLibrary.GetImperialPaperSizes();
 
                 // Add each paper size to the dropdown
-                for (int i = 0; i < paperSizes.Count; i++)
+                for (int i = 0; i < PaperSizes.Count; i++)
                 {
-                    paperParam.AddNamedValue(paperSizes[i].Name, i);
+                    paperParam.AddNamedValue(PaperSizes[i].Name, i);
                 }
             }
         }

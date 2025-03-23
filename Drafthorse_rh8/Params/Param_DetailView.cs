@@ -19,7 +19,7 @@ public class Param_DetailView : GH_PersistentGeometryParam<GH_DetailView>, IGH_B
     public override Guid ComponentGuid => new Guid("613BD246-3828-426A-8812-2C07A63CF386");
     protected override Bitmap Icon => Resources.DetailViewParam; // Provide an icon
 
-    RhinoDoc doc = RhinoDoc.ActiveDoc;
+    //readonly RhinoDoc doc = RhinoDoc.ActiveDoc;
 
     protected override GH_GetterResult Prompt_Plural(ref List<GH_DetailView> values)
     {

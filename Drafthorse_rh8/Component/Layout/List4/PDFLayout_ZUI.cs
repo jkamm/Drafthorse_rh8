@@ -17,11 +17,11 @@ using Rhino.FileIO;
 using Drafthorse.Component.Base;
 using Drafthorse.Helper;
 
-namespace Layout
+namespace Drafthorse.Component.Layout.List4
 {
     public class PDFLayout_ZUI : ZuiComponent
     {
-        
+
 
         private static readonly ParamDefinition[] inputs = new ParamDefinition[10]
         {
@@ -144,7 +144,7 @@ namespace Layout
 
             int i = 0;
             bool run = false;
-            if (!TryGetData<bool>(DA, inputs[i++].Param.Name, out bool? value0)) run = false;
+            if (!TryGetData(DA, inputs[i++].Param.Name, out bool? value0)) run = false;
             if (value0.HasValue) run = value0.Value;
 
             List<ModelPageViewport> pageList = new List<ModelPageViewport>();
@@ -153,14 +153,14 @@ namespace Layout
 
             List<int> indexList = pageList.Select(p => (int)p.PageNumber).ToList();
 
-            string folder = String.Empty;
+            string folder = string.Empty;
             if (!TryGetData(DA, inputs[i++].Param.Name, out folder)) return;
 
-            string filename = String.Empty;
+            string filename = string.Empty;
             if (!TryGetData(DA, inputs[i++].Param.Name, out filename)) filename = "Layout";
 
             int dpi = 100;
-            TryGetData(DA, inputs[i++].Param.Name, out int? value1); 
+            TryGetData(DA, inputs[i++].Param.Name, out int? value1);
             if (value1.HasValue) dpi = value1.Value;
             if (dpi > 1200) AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Suggested Max DPI = 1200");
             else if (dpi < 72) AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Suggested Min DPI = 72");
@@ -178,20 +178,20 @@ namespace Layout
 
             ObjectDraftingLineWidth lineWidth = new ObjectDraftingLineWidth(0.13);
             TryGetData<ObjectDraftingLineWidth>(DA, inputs[i++].Param.Name, out var value4);
-            if(value4 != null) lineWidth = value4;
+            if (value4 != null) lineWidth = value4;
             double defaultPrintWidth = lineWidth.IsValid ? (double)lineWidth.Width : 0.13;
 
             double wireScale = 1.0;
             TryGetData(DA, inputs[i++].Param.Name, out double? value5);
-            if(value5.HasValue) wireScale = value5.Value;
+            if (value5.HasValue) wireScale = value5.Value;
 
             bool isRasterMode = false;
             TryGetData(DA, inputs[i++].Param.Name, out bool? value6);
-            if(value5.HasValue) isRasterMode = value6.Value;
+            if (value5.HasValue) isRasterMode = value6.Value;
             RhinoApp.WriteLine("Raster is set to " + isRasterMode);
 
 
-            bool pressed = (base.Attributes as CustomAttributes).Pressed;
+            bool pressed = (Attributes as CustomAttributes).Pressed;
 
             if (run || pressed)
             {
@@ -231,9 +231,9 @@ namespace Layout
                 foreach (RhinoPageView page in pages)
                 {
                     double modelToPage = RhinoMath.UnitScale(rhDoc.PageUnitSystem, UnitSystem.Inches);
-                    double relativeDPI = ((double)dpi * modelToPage);
+                    double relativeDPI = dpi * modelToPage;
                     System.Drawing.Size size = Drafthorse.Helper.Layout.SetSize(page, dpi, modelToPage);
-                    Rhino.RhinoApp.WriteLine("Size is w{1}, h{0}, relativeDPI is {2}", size.Width, size.Height, relativeDPI);
+                    RhinoApp.WriteLine("Size is w{1}, h{0}, relativeDPI is {2}", size.Width, size.Height, relativeDPI);
                     ViewCaptureSettings settings = new ViewCaptureSettings(page, size, dpi);
                     settings.OutputColor = color;
                     settings.UsePrintWidths = usePrintWidths;
@@ -291,113 +291,113 @@ namespace Layout
         public override void VariableParameterMaintenance()
         {
             base.VariableParameterMaintenance();
-            int num = base.Params.IndexOfInputParam("DPI");
-            if (num >= 0 && base.Params.Input[num] is Param_Integer param_Integer)
+            int num = Params.IndexOfInputParam("DPI");
+            if (num >= 0 && Params.Input[num] is Param_Integer param_Integer)
             {
                 param_Integer.ClearNamedValues();
                 param_Integer.AddNamedValue("Low (100)", 100);
                 param_Integer.AddNamedValue("Medium (600)", 600);
-                param_Integer.AddNamedValue("High (1200)", 1200);                
+                param_Integer.AddNamedValue("High (1200)", 1200);
             }
 
-            int num2 = base.Params.IndexOfInputParam("ColorMode");
-            if (num2 >= 0 && base.Params.Input[num2] is Param_Integer param_Integer2)
+            int num2 = Params.IndexOfInputParam("ColorMode");
+            if (num2 >= 0 && Params.Input[num2] is Param_Integer param_Integer2)
             {
                 param_Integer2.ClearNamedValues();
                 param_Integer2.AddNamedValue("Black + White", 0);
                 param_Integer2.AddNamedValue("Display Color", 1);
-                param_Integer2.AddNamedValue("Print Color",2);
+                param_Integer2.AddNamedValue("Print Color", 2);
 
 
             }
         }
-        
+
         #region Add Value Lists
-            protected override void AppendAdditionalComponentMenuItems(System.Windows.Forms.ToolStripDropDown menu)
-            {
-                base.AppendAdditionalComponentMenuItems(menu);
-                Menu_AppendItem(menu, "Add/Update Layout ValueList", Menu_DoClick, true);
-            }
+        protected override void AppendAdditionalComponentMenuItems(System.Windows.Forms.ToolStripDropDown menu)
+        {
+            base.AppendAdditionalComponentMenuItems(menu);
+            Menu_AppendItem(menu, "Add/Update Layout ValueList", Menu_DoClick, true);
+        }
 
-            private void Menu_DoClick(object sender, EventArgs e)
-            {
-                var pageViews = RhinoDoc.ActiveDoc.Views.GetPageViews();
-                Drafthorse.Helper.Layout.SortPagesByPageNumber(pageViews);
-                List<string> pageNums = pageViews.Select(p => p.PageNumber.ToString()).ToList();
-                List<string> pageNames = pageViews.Select(p => p.PageName.ToString()).ToList();
+        private void Menu_DoClick(object sender, EventArgs e)
+        {
+            var pageViews = RhinoDoc.ActiveDoc.Views.GetPageViews();
+            Drafthorse.Helper.Layout.SortPagesByPageNumber(pageViews);
+            List<string> pageNums = pageViews.Select(p => p.PageNumber.ToString()).ToList();
+            List<string> pageNames = pageViews.Select(p => p.PageName.ToString()).ToList();
 
-                int pagesInputIndex = -1;
-                for (int i = 0; i < inputs.Length; i++)
+            int pagesInputIndex = -1;
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i].Param.Name == "Pages")
                 {
-                    if (inputs[i].Param.Name == "Pages")
-                    {
-                        pagesInputIndex = i;
-                        break;
-                    }
+                    pagesInputIndex = i;
+                    break;
                 }
-
-                if (pagesInputIndex >= 0 && !ValList.AddOrUpdateValueList(this, pagesInputIndex, "Layouts", "Layouts To Print: ", pageNames, pageNums))
-                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "ValueList at input [" + (pagesInputIndex + 1) + "] failed to update");
-
-                ExpireSolution(true);
             }
+
+            if (pagesInputIndex >= 0 && !ValList.AddOrUpdateValueList(this, pagesInputIndex, "Layouts", "Layouts To Print: ", pageNames, pageNums))
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "ValueList at input [" + (pagesInputIndex + 1) + "] failed to update");
+
+            ExpireSolution(true);
+        }
         #endregion Add Value Lists
 
         #region AutoValueList
-            private bool _handled = false;
-            private void SetupEventHandlers()
+        private bool _handled = false;
+        private void SetupEventHandlers()
+        {
+            if (_handled) return;
+
+            int pagesInputIndex = -1;
+            for (int i = 0; i < inputs.Length; i++)
             {
-                if (_handled) return;
-
-                int pagesInputIndex = -1;
-                for (int i = 0; i < inputs.Length; i++)
+                if (inputs[i].Param.Name == "Pages")
                 {
-                    if (inputs[i].Param.Name == "Pages")
-                    {
-                        pagesInputIndex = i;
-                        break;
-                    }
-                }
-
-                if (pagesInputIndex >= 0) Params.Input[pagesInputIndex].ObjectChanged += InputParamChanged;
-                _handled = true;
-            }
-
-            protected override void BeforeSolveInstance()
-            {
-                base.BeforeSolveInstance();
-                SetupEventHandlers();
-            }
-
-            public void InputParamChanged(IGH_DocumentObject sender, GH_ObjectChangedEventArgs e)
-            {
-                int pagesInputIndex = -1;
-                for (int i = 0; i < inputs.Length; i++)
-                {
-                    if (inputs[i].Param.Name == "Pages")
-                    {
-                        pagesInputIndex = i;
-                        break;
-                    }
-                }
-
-                if (pagesInputIndex >= 0 && sender.NickName == Params.Input[pagesInputIndex].NickName)
-                {
-                    var pageDictionary = RhinoDoc.ActiveDoc.Views.GetPageViews().ToDictionary(v => v.PageName, v => v.PageNumber);
-                    List<string> pageViewNames = pageDictionary.Keys.ToList();
-                    List<string> layoutIndices = new List<string>();
-                    for (int i = 0; i < pageViewNames.Count; i++)
-                        layoutIndices.Add(pageDictionary[pageViewNames[i]].ToString());
-
-                    try
-                    {
-                        ValList.UpdateValueList(this, pagesInputIndex, "Layouts", "Layouts To Print: ", pageViewNames, layoutIndices);
-                        ExpireSolution(true);
-                    }
-                    catch (Exception) { /* Ignore if it's not a ValueList */ }
+                    pagesInputIndex = i;
+                    break;
                 }
             }
-            #endregion AutoValueList
+
+            if (pagesInputIndex >= 0) Params.Input[pagesInputIndex].ObjectChanged += InputParamChanged;
+            _handled = true;
+        }
+
+        protected override void BeforeSolveInstance()
+        {
+            base.BeforeSolveInstance();
+            SetupEventHandlers();
+        }
+
+        public void InputParamChanged(IGH_DocumentObject sender, GH_ObjectChangedEventArgs e)
+        {
+            int pagesInputIndex = -1;
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i].Param.Name == "Pages")
+                {
+                    pagesInputIndex = i;
+                    break;
+                }
+            }
+
+            if (pagesInputIndex >= 0 && sender.NickName == Params.Input[pagesInputIndex].NickName)
+            {
+                var pageDictionary = RhinoDoc.ActiveDoc.Views.GetPageViews().ToDictionary(v => v.PageName, v => v.PageNumber);
+                List<string> pageViewNames = pageDictionary.Keys.ToList();
+                List<string> layoutIndices = new List<string>();
+                for (int i = 0; i < pageViewNames.Count; i++)
+                    layoutIndices.Add(pageDictionary[pageViewNames[i]].ToString());
+
+                try
+                {
+                    ValList.UpdateValueList(this, pagesInputIndex, "Layouts", "Layouts To Print: ", pageViewNames, layoutIndices);
+                    ExpireSolution(true);
+                }
+                catch (Exception) { /* Ignore if it's not a ValueList */ }
+            }
+        }
+        #endregion AutoValueList
 
         public override void CreateAttributes()
         {
